@@ -235,7 +235,7 @@ typechain/
 typechain-types/
 
 # Hardhat
-hardhat.config.js
+# hardhat.config.js - Removed to commit project config
 .openzeppelin/
 
 # Foundry
