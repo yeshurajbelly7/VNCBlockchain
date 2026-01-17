@@ -216,6 +216,13 @@ temp/
 *.tar.gz
 *.rar
 
+# Production/Server specific files
+.env.production
+ecosystem.config.js
+*.pid
+*.sock
+dumps/
+
 # Keys and secrets (IMPORTANT)
 *.key
 *.pem
