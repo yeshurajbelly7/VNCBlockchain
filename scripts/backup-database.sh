@@ -70,6 +70,8 @@ print_info "Backup file: $BACKUP_FILE"
 echo ""
 
 # Create backup
+# Note: For production, consider using .pgpass file for secure password handling
+# Create ~/.pgpass with: hostname:port:database:username:password (chmod 600)
 if PGPASSWORD=$(echo $DATABASE_URL | sed -n 's/.*:\/\/[^:]*:\([^@]*\)@.*/\1/p') pg_dump -h $DB_HOST -p $DB_PORT -U $DB_USER -d $DB_NAME > $BACKUP_FILE; then
     print_success "Backup created successfully!"
     

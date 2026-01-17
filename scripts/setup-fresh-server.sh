@@ -55,7 +55,16 @@ echo ""
 
 # Step 2: Install Node.js 20.x
 print_info "Step 2/10: Installing Node.js 20.x..."
-curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+# Download the NodeSource setup script
+curl -fsSL https://deb.nodesource.com/setup_20.x -o /tmp/nodesource_setup.sh
+# Verify it's a bash script
+if head -1 /tmp/nodesource_setup.sh | grep -q "#!/bin/bash"; then
+    bash /tmp/nodesource_setup.sh
+    rm /tmp/nodesource_setup.sh
+else
+    print_error "Downloaded script doesn't appear to be a valid bash script"
+    exit 1
+fi
 apt install -y nodejs
 node --version
 npm --version

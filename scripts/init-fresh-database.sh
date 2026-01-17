@@ -136,7 +136,7 @@ if [ -n "$SUPER_ADMIN_EMAIL" ] && [ -n "$SUPER_ADMIN_PASSWORD" ]; then
                 throw error;
             }
         } finally {
-            await prisma.\$disconnect();
+            await prisma.$disconnect();
         }
     }
     
@@ -201,7 +201,7 @@ async function createPresaleStages() {
     } catch (error) {
         console.error('Error creating presale stages:', error.message);
     } finally {
-        await prisma.\$disconnect();
+        await prisma.$disconnect();
     }
 }
 
