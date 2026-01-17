@@ -23,6 +23,13 @@ dist/
 *.pem
 .cache/
 
+# Build artifacts and deployment files
+*.zip
+backend-deploy.zip
+frontend-deploy.zip
+deployment/
+*-part*.txt
+
 # Debug
 npm-debug.log*
 yarn-debug.log*
@@ -76,6 +83,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+build-log.txt
+build-errors.txt
 
 # Runtime data
 pids/
