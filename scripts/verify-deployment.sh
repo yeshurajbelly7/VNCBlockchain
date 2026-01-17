@@ -138,7 +138,7 @@ echo ""
 
 # Test 10: Check logs for errors
 print_info "Test 10/10: Checking for recent errors in logs..."
-ERROR_COUNT=$(pm2 logs --nostream --lines 100 2>/dev/null | grep -i "error" | wc -l || echo 0)
+ERROR_COUNT=$(pm2 logs --nostream --lines 100 2>/dev/null | grep -c -i "error" || echo 0)
 if [ "$ERROR_COUNT" -eq 0 ]; then
     print_success "No recent errors found in logs"
 else

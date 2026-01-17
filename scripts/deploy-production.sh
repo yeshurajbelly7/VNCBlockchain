@@ -53,7 +53,7 @@ source .env
 # Verify NODE_ENV is production
 if [ "$NODE_ENV" != "production" ]; then
     print_warning "NODE_ENV is not set to 'production'"
-    read -p "Continue anyway? (yes/no): " confirm
+    read -r -p "Continue anyway? (yes/no): " confirm
     if [ "$confirm" != "yes" ]; then
         print_error "Deployment cancelled"
         exit 1
@@ -98,8 +98,14 @@ echo ""
 # Step 5: Setup PM2 processes
 print_info "Step 5/7: Setting up PM2 processes..."
 
+# Get current directory for absolute paths
+CURRENT_DIR=$(pwd)
+
+# Create logs directory
+mkdir -p logs
+
 # Create PM2 ecosystem file
-cat > ecosystem.config.js << 'EOF'
+cat > ecosystem.config.js << EOF
 module.exports = {
   apps: [
     {
@@ -112,9 +118,9 @@ module.exports = {
         NODE_ENV: 'production',
         PORT: 5000
       },
-      error_file: './logs/backend-error.log',
-      out_file: './logs/backend-out.log',
-      log_file: './logs/backend-combined.log',
+      error_file: '${CURRENT_DIR}/logs/backend-error.log',
+      out_file: '${CURRENT_DIR}/logs/backend-out.log',
+      log_file: '${CURRENT_DIR}/logs/backend-combined.log',
       time: true,
       max_memory_restart: '1G',
       node_args: '--max-old-space-size=4096'
@@ -130,18 +136,15 @@ module.exports = {
         NODE_ENV: 'production',
         PORT: 3002
       },
-      error_file: './logs/frontend-error.log',
-      out_file: './logs/frontend-out.log',
-      log_file: './logs/frontend-combined.log',
+      error_file: '${CURRENT_DIR}/logs/frontend-error.log',
+      out_file: '${CURRENT_DIR}/logs/frontend-out.log',
+      log_file: '${CURRENT_DIR}/logs/frontend-combined.log',
       time: true,
       max_memory_restart: '1G'
     }
   ]
 };
 EOF
-
-# Create logs directory
-mkdir -p logs
 
 # Stop existing processes
 pm2 delete all 2>/dev/null || true
@@ -226,7 +229,7 @@ echo ""
 
 # Step 7: Setup SSL (optional)
 print_info "Step 7/7: SSL Certificate Setup (optional)..."
-read -p "Do you want to setup SSL with Let's Encrypt? (yes/no): " ssl_confirm
+read -r -p "Do you want to setup SSL with Let's Encrypt? (yes/no): " ssl_confirm
 if [ "$ssl_confirm" == "yes" ]; then
     sudo apt install -y certbot python3-certbot-nginx
     print_warning "Please run: sudo certbot --nginx -d yourdomain.com -d www.yourdomain.com -d api.yourdomain.com"

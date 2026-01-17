@@ -72,7 +72,7 @@ echo ""
 # Create backup
 # Note: For production, consider using .pgpass file for secure password handling
 # Create ~/.pgpass with: hostname:port:database:username:password (chmod 600)
-if PGPASSWORD=$(echo $DATABASE_URL | sed -n 's/.*:\/\/[^:]*:\([^@]*\)@.*/\1/p') pg_dump -h $DB_HOST -p $DB_PORT -U $DB_USER -d $DB_NAME > $BACKUP_FILE; then
+if PGPASSWORD=$(echo "$DATABASE_URL" | sed -n 's/.*:\/\/[^:]*:\([^@]*\)@.*/\1/p') pg_dump -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" > "$BACKUP_FILE"; then
     print_success "Backup created successfully!"
     
     # Get file size
@@ -81,7 +81,7 @@ if PGPASSWORD=$(echo $DATABASE_URL | sed -n 's/.*:\/\/[^:]*:\([^@]*\)@.*/\1/p') 
     
     # Compress backup
     print_info "Compressing backup..."
-    gzip $BACKUP_FILE
+    gzip "$BACKUP_FILE"
     COMPRESSED_SIZE=$(du -h "$BACKUP_FILE.gz" | cut -f1)
     print_success "Backup compressed: $BACKUP_FILE.gz ($COMPRESSED_SIZE)"
 else
@@ -93,8 +93,8 @@ echo ""
 
 # Clean old backups (keep last 30 days)
 print_info "Cleaning old backups (keeping last 30 days)..."
-find $BACKUP_DIR -name "*.sql.gz" -mtime +30 -delete
-REMAINING=$(ls -1 $BACKUP_DIR/*.sql.gz 2>/dev/null | wc -l)
+find "$BACKUP_DIR" -name "*.sql.gz" -mtime +30 -delete
+REMAINING=$(find "$BACKUP_DIR" -name "*.sql.gz" 2>/dev/null | wc -l)
 print_success "Cleanup complete. $REMAINING backup(s) remaining."
 
 echo ""

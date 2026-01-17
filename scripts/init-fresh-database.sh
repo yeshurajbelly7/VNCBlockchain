@@ -90,7 +90,7 @@ echo ""
 
 # Step 3: Reset database (drop all tables and recreate)
 print_warning "Step 3/6: Resetting database (this will delete all existing data)..."
-read -p "Are you sure you want to reset the database? (yes/no): " confirm
+read -r -p "Are you sure you want to reset the database? (yes/no): " confirm
 if [ "$confirm" != "yes" ]; then
     print_error "Database reset cancelled"
     exit 1

@@ -24,6 +24,10 @@ print_success() {
     echo -e "${GREEN}✓ ${1}${NC}"
 }
 
+print_error() {
+    echo -e "${RED}✗ ${1}${NC}"
+}
+
 print_warning() {
     echo -e "${YELLOW}⚠ ${1}${NC}"
 }
@@ -35,7 +39,7 @@ echo "======================================================================"
 echo ""
 
 print_warning "This will remove all build artifacts and dependencies"
-read -p "Continue? (yes/no): " confirm
+read -r -p "Continue? (yes/no): " confirm
 if [ "$confirm" != "yes" ]; then
     echo "Cancelled"
     exit 0
@@ -78,7 +82,7 @@ print_success "Environment files removed (examples kept)"
 
 # Remove deployment artifacts
 print_info "Removing deployment artifacts..."
-rm -f *.zip
+rm -f -- *.zip
 rm -rf deployment/
 print_success "Deployment artifacts removed"
 
@@ -94,7 +98,7 @@ find . -name "*.tsbuildinfo" -type f -delete
 print_success "TypeScript build info removed"
 
 # Remove package-lock files (optional)
-read -p "Remove package-lock.json files? (yes/no): " remove_locks
+read -r -p "Remove package-lock.json files? (yes/no): " remove_locks
 if [ "$remove_locks" == "yes" ]; then
     find . -name "package-lock.json" -type f -delete
     print_success "package-lock.json files removed"
