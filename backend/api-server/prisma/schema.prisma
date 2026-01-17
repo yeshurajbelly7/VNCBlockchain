@@ -1,0 +1,309 @@
+// VNC Blockchain Database Schema
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User Model
+model User {
+  id                String      @id @default(uuid())
+  email             String      @unique
+  password_hash     String
+  name              String
+  phone             String?
+  role              Role        @default(USER)
+  
+  // Wallet Information
+  wallet_address    String      @unique
+  mnemonic_encrypted String?    // Encrypted mnemonic phrase
+  
+  // KYC Information
+  kyc_status        KYCStatus   @default(PENDING)
+  kyc_documents     Json?
+  kyc_approved_at   DateTime?
+  kyc_approved_by   String?
+  
+  // 2FA
+  two_fa_enabled    Boolean     @default(false)
+  two_fa_secret     String?
+  
+  // Presale Information
+  total_invested    Float       @default(0)
+  tokens_owned      Float       @default(0)
+  
+  // Balances
+  inr_balance       Float       @default(0)
+  vnc_balance       Float       @default(0)
+  eth_balance       Float       @default(0)
+  usdt_balance      Float       @default(0)
+  
+  // Status
+  is_active         Boolean     @default(true)
+  is_suspended      Boolean     @default(false)
+  
+  // Timestamps
+  created_at        DateTime    @default(now())
+  updated_at        DateTime    @updatedAt
+  last_login        DateTime?
+  
+  // Relations
+  transactions      Transaction[]
+  deposits          Deposit[]
+  withdrawals       Withdrawal[]
+  referrals         Referral[]   @relation("Referrer")
+  referred_by       Referral?    @relation("Referred")
+  audit_logs        AuditLog[]
+  
+  @@index([email])
+  @@index([wallet_address])
+  @@index([role])
+}
+
+// Transaction Model
+model Transaction {
+  id            String            @id @default(uuid())
+  user_id       String
+  type          TransactionType
+  amount        Float
+  currency      String
+  status        TransactionStatus @default(PENDING)
+  
+  // Blockchain Data
+  tx_hash       String?           @unique
+  block_number  Int?
+  confirmations Int               @default(0)
+  
+  // Payment Gateway Data
+  payment_id    String?
+  order_id      String?
+  
+  // Metadata
+  from_address  String?
+  to_address    String?
+  notes         String?
+  
+  created_at    DateTime          @default(now())
+  updated_at    DateTime          @updatedAt
+  
+  // Relations
+  user          User              @relation(fields: [user_id], references: [id])
+  
+  @@index([user_id])
+  @@index([type])
+  @@index([status])
+  @@index([created_at])
+}
+
+// Deposit Model (Cashfree)
+model Deposit {
+  id                String        @id @default(uuid())
+  user_id           String
+  amount            Float
+  payment_method    PaymentMethod
+  
+  // Cashfree Data
+  order_id          String        @unique
+  payment_session_id String?
+  payment_id        String?
+  payment_status    String        @default("PENDING")
+  
+  // Status
+  status            DepositStatus @default(PENDING)
+  processed_at      DateTime?
+  
+  created_at        DateTime      @default(now())
+  updated_at        DateTime      @updatedAt
+  
+  // Relations
+  user              User          @relation(fields: [user_id], references: [id])
+  
+  @@index([user_id])
+  @@index([order_id])
+  @@index([status])
+}
+
+// Withdrawal Model
+model Withdrawal {
+  id              String           @id @default(uuid())
+  user_id         String
+  amount          Float
+  currency        String
+  to_address      String
+  
+  // Status & Approval
+  status          WithdrawalStatus @default(PENDING)
+  approved_by     String?
+  approved_at     DateTime?
+  rejected_reason String?
+  
+  // Blockchain
+  tx_hash         String?          @unique
+  processed_at    DateTime?
+  
+  created_at      DateTime         @default(now())
+  updated_at      DateTime         @updatedAt
+  
+  // Relations
+  user            User             @relation(fields: [user_id], references: [id])
+  
+  @@index([user_id])
+  @@index([status])
+}
+
+// Presale Model
+model Presale {
+  id                  String    @id @default(uuid())
+  stage               Int       @default(1)
+  price_inr           Float
+  price_usd           Float
+  tokens_sold         Float     @default(0)
+  tokens_available    Float
+  total_raised        Float     @default(0)
+  participants        Int       @default(0)
+  
+  start_date          DateTime
+  end_date            DateTime
+  
+  is_active           Boolean   @default(true)
+  
+  created_at          DateTime  @default(now())
+  updated_at          DateTime  @updatedAt
+  
+  @@index([stage])
+  @@index([is_active])
+}
+
+// Referral Model
+model Referral {
+  id              String    @id @default(uuid())
+  referrer_id     String
+  referred_id     String    @unique
+  referral_code   String    @unique
+  
+  // Rewards
+  reward_earned   Float     @default(0)
+  reward_paid     Boolean   @default(false)
+  
+  created_at      DateTime  @default(now())
+  
+  // Relations
+  referrer        User      @relation("Referrer", fields: [referrer_id], references: [id])
+  referred        User      @relation("Referred", fields: [referred_id], references: [id])
+  
+  @@index([referrer_id])
+  @@index([referral_code])
+}
+
+// Airdrop Model
+model Airdrop {
+  id              String        @id @default(uuid())
+  name            String
+  description     String
+  total_tokens    Float
+  tokens_claimed  Float         @default(0)
+  
+  // Eligibility
+  min_investment  Float?
+  eligible_users  String[]      // Array of user IDs
+  
+  // Status
+  status          AirdropStatus @default(PENDING)
+  start_date      DateTime
+  end_date        DateTime
+  
+  created_at      DateTime      @default(now())
+  updated_at      DateTime      @updatedAt
+  
+  @@index([status])
+}
+
+// Audit Log Model
+model AuditLog {
+  id          String   @id @default(uuid())
+  user_id     String
+  action      String
+  entity_type String
+  entity_id   String?
+  
+  // Details
+  old_value   Json?
+  new_value   Json?
+  ip_address  String?
+  user_agent  String?
+  
+  created_at  DateTime @default(now())
+  
+  // Relations
+  user        User     @relation(fields: [user_id], references: [id])
+  
+  @@index([user_id])
+  @@index([action])
+  @@index([created_at])
+}
+
+// Enums
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  PRESALE_ADMIN
+  VALIDATOR
+  USER
+}
+
+enum KYCStatus {
+  PENDING
+  SUBMITTED
+  APPROVED
+  REJECTED
+}
+
+enum TransactionType {
+  DEPOSIT
+  WITHDRAWAL
+  PRESALE_PURCHASE
+  TRANSFER
+  AIRDROP
+  REFERRAL_REWARD
+}
+
+enum TransactionStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum PaymentMethod {
+  UPI
+  CARD
+  NET_BANKING
+  CRYPTO
+}
+
+enum DepositStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum WithdrawalStatus {
+  PENDING
+  APPROVED
+  PROCESSING
+  COMPLETED
+  REJECTED
+  FAILED
+}
+
+enum AirdropStatus {
+  PENDING
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}

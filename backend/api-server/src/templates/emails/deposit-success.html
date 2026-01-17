@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deposit Successful</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f4f4; padding: 20px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+          <!-- Header -->
+          <tr>
+            <td style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 40px; text-align: center;">
+              <div style="width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center;">
+                <span style="font-size: 48px;">✓</span>
+              </div>
+              <h1 style="color: #ffffff; margin: 0; font-size: 28px;">Deposit Successful!</h1>
+            </td>
+          </tr>
+          
+          <!-- Content -->
+          <tr>
+            <td style="padding: 40px 30px;">
+              <h2 style="color: #333; margin: 0 0 20px 0;">Hi {{name}},</h2>
+              <p style="color: #666; line-height: 1.6; margin: 0 0 25px 0;">
+                Your deposit has been successfully processed and credited to your VNC Blockchain wallet.
+              </p>
+              
+              <!-- Transaction Details -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f9f9f9; border-radius: 6px; padding: 20px; margin-bottom: 25px;">
+                <tr>
+                  <td style="padding: 10px 0;">
+                    <table width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="color: #999; font-size: 14px; padding: 5px 0;">Amount Deposited</td>
+                        <td align="right" style="color: #10b981; font-size: 24px; font-weight: bold; padding: 5px 0;">{{amount}}</td>
+                      </tr>
+                      <tr>
+                        <td style="color: #999; font-size: 14px; padding: 5px 0;">Order ID</td>
+                        <td align="right" style="color: #333; font-size: 14px; font-family: monospace; padding: 5px 0;">{{orderId}}</td>
+                      </tr>
+                      <tr>
+                        <td style="color: #999; font-size: 14px; padding: 5px 0;">Payment ID</td>
+                        <td align="right" style="color: #333; font-size: 14px; font-family: monospace; padding: 5px 0;">{{paymentId}}</td>
+                      </tr>
+                      <tr>
+                        <td style="color: #999; font-size: 14px; padding: 5px 0;">Date & Time</td>
+                        <td align="right" style="color: #333; font-size: 14px; padding: 5px 0;">{{date}}</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+              
+              <p style="color: #666; line-height: 1.6; margin: 0 0 25px 0;">
+                Your wallet balance has been updated. You can now use this balance to purchase VNC tokens during our presale.
+              </p>
+              
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center">
+                    <a href="{{frontendUrl}}/dashboard" style="display: inline-block; padding: 15px 40px; background: linear-gradient(135deg, #7c3aed 0%, #06b6d4 100%); color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 16px;">View Dashboard</a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          
+          <!-- Footer -->
+          <tr>
+            <td style="background-color: #f9f9f9; padding: 30px; text-align: center;">
+              <p style="color: #999; font-size: 12px; margin: 0 0 10px 0;">
+                &copy; 2026 VNC Blockchain. All rights reserved.
+              </p>
+              <p style="color: #999; font-size: 12px; margin: 0;">
+                For support, contact: support@vncblockchain.com
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

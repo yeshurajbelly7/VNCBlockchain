@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallet | VNC-20</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0ea5e9;
+            --primary-dark: #0284c7;
+            --quantum: #a855f7;
+            --quantum-dark: #9333ea;
+            --bg-dark: #0f0f1e;
+            --bg-darker: #060610;
+            --card-bg: #1a1a2e;
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --border: #2d2d44;
+            --success: #10b981;
+            --error: #ef4444;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--bg-darker) 0%, var(--bg-dark) 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 1rem 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--primary), var(--quantum));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--quantum));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+
+        .wallet-address {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: var(--card-bg);
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .address-text {
+            font-family: 'Courier New', monospace;
+            color: var(--primary);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(14, 165, 233, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--card-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-icon {
+            padding: 0.5rem;
+            background: transparent;
+            border: 1px solid var(--border);
+        }
+
+        .wallet-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .wallet-main {
+            grid-column: 1 / -1;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .balance-card {
+            background: linear-gradient(135deg, var(--primary), var(--quantum));
+            padding: 2rem;
+            border-radius: 16px;
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .balance-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+        }
+
+        .balance-amount {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .balance-usd {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .action-btn {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 1rem;
+            border-radius: 12px;
+            color: white;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+        }
+
+        .action-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .assets-list {
+            margin-top: 1rem;
+        }
+
+        .asset-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(14, 165, 233, 0.05);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            transition: all 0.3s;
+        }
+
+        .asset-item:hover {
+            background: rgba(14, 165, 233, 0.1);
+            border-color: var(--primary);
+        }
+
+        .asset-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .asset-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary), var(--quantum));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .asset-details h4 {
+            margin-bottom: 0.25rem;
+        }
+
+        .asset-details p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .asset-balance {
+            text-align: right;
+        }
+
+        .asset-amount {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+
+        .asset-value {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+
+        .tx-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .tx-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .tx-icon.send {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--error);
+        }
+
+        .tx-icon.receive {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .tx-details h4 {
+            margin-bottom: 0.25rem;
+        }
+
+        .tx-details p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .tx-amount {
+            text-align: right;
+        }
+
+        .tx-value {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+
+        .tx-status {
+            font-size: 0.85rem;
+        }
+
+        .staking-card {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(168, 85, 247, 0.05));
+            border: 1px solid rgba(168, 85, 247, 0.3);
+        }
+
+        .staking-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .staking-stat {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(168, 85, 247, 0.1);
+            border-radius: 8px;
+        }
+
+        .staking-stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--quantum);
+            margin-bottom: 0.25rem;
+        }
+
+        .staking-stat-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .close-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .max-btn {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--quantum);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            .wallet-container {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .balance-amount {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="index.html" class="logo">
+                    <div class="logo-icon">V</div>
+                    <span>VNC-20 Wallet</span>
+                </a>
+                <div class="wallet-address">
+                    <span class="address-text" id="userAddress">0x742d...89Af</span>
+                    <button class="btn btn-icon" onclick="copyAddress()">📋</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="wallet-main">
+            <div class="balance-card">
+                <div class="balance-label">Total Balance</div>
+                <div class="balance-amount" id="totalBalance">12,458.75 VNC</div>
+                <div class="balance-usd" id="balanceUSD">≈ $30,523.93 USD</div>
+                
+                <div class="action-buttons">
+                    <div class="action-btn" onclick="openModal('send')">
+                        <div class="action-icon">📤</div>
+                        <div>Send</div>
+                    </div>
+                    <div class="action-btn" onclick="openModal('receive')">
+                        <div class="action-icon">📥</div>
+                        <div>Receive</div>
+                    </div>
+                    <div class="action-btn" onclick="openModal('stake')">
+                        <div class="action-icon">💰</div>
+                        <div>Stake</div>
+                    </div>
+                    <div class="action-btn" onclick="openModal('swap')">
+                        <div class="action-icon">🔄</div>
+                        <div>Swap</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="wallet-container">
+            <!-- Assets -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Assets</h3>
+                    <button class="btn btn-secondary">Add Token</button>
+                </div>
+                <div class="assets-list">
+                    <div class="asset-item">
+                        <div class="asset-info">
+                            <div class="asset-icon">V</div>
+                            <div class="asset-details">
+                                <h4>VNC Coin</h4>
+                                <p>VNC</p>
+                            </div>
+                        </div>
+                        <div class="asset-balance">
+                            <div class="asset-amount">12,458.75</div>
+                            <div class="asset-value">$30,523.93</div>
+                        </div>
+                    </div>
+                    
+                    <div class="asset-item">
+                        <div class="asset-info">
+                            <div class="asset-icon">W</div>
+                            <div class="asset-details">
+                                <h4>Wrapped VNC</h4>
+                                <p>wVNC</p>
+                            </div>
+                        </div>
+                        <div class="asset-balance">
+                            <div class="asset-amount">5,234.50</div>
+                            <div class="asset-value">$12,824.53</div>
+                        </div>
+                    </div>
+                    
+                    <div class="asset-item">
+                        <div class="asset-info">
+                            <div class="asset-icon">D</div>
+                            <div class="asset-details">
+                                <h4>DeFi Token</h4>
+                                <p>DFT</p>
+                            </div>
+                        </div>
+                        <div class="asset-balance">
+                            <div class="asset-amount">1,850.00</div>
+                            <div class="asset-value">$22,829.00</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Staking -->
+            <div class="card staking-card">
+                <div class="card-header">
+                    <h3 class="card-title">Staking</h3>
+                    <button class="btn btn-primary" onclick="openModal('stake')">Stake Now</button>
+                </div>
+                <div class="staking-stats">
+                    <div class="staking-stat">
+                        <div class="staking-stat-value">5,000</div>
+                        <div class="staking-stat-label">Staked VNC</div>
+                    </div>
+                    <div class="staking-stat">
+                        <div class="staking-stat-value">245.50</div>
+                        <div class="staking-stat-label">Rewards</div>
+                    </div>
+                    <div class="staking-stat">
+                        <div class="staking-stat-value">18.5%</div>
+                        <div class="staking-stat-label">APY</div>
+                    </div>
+                </div>
+                <button class="btn btn-success" style="width: 100%;">Claim Rewards</button>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="card" style="margin-top: 2rem;">
+            <div class="card-header">
+                <h3 class="card-title">Recent Activity</h3>
+                <button class="btn btn-secondary">View All</button>
+            </div>
+            <div class="transactions-list" id="transactionsList">
+                <!-- Transactions will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Send Modal -->
+    <div class="modal" id="sendModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Send VNC</h3>
+                <button class="close-btn" onclick="closeModal('send')">&times;</button>
+            </div>
+            <form onsubmit="sendTransaction(event)">
+                <div class="form-group">
+                    <label class="form-label">Recipient Address</label>
+                    <input type="text" class="form-input" placeholder="0x..." required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Amount</label>
+                    <div class="input-group">
+                        <input type="number" class="form-input" placeholder="0.00" step="0.01" required>
+                        <button type="button" class="max-btn">MAX</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Network Fee</label>
+                    <input type="text" class="form-input" value="$0.00012" readonly>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Send Transaction</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Receive Modal -->
+    <div class="modal" id="receiveModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Receive VNC</h3>
+                <button class="close-btn" onclick="closeModal('receive')">&times;</button>
+            </div>
+            <div style="text-align: center; padding: 2rem 0;">
+                <div style="background: white; padding: 2rem; border-radius: 12px; display: inline-block; margin-bottom: 1rem;">
+                    <div style="font-size: 8rem;">📱</div>
+                </div>
+                <p style="color: var(--text-secondary); margin-bottom: 1rem;">Your Wallet Address</p>
+                <div style="background: var(--bg-dark); padding: 1rem; border-radius: 8px; font-family: monospace; word-break: break-all; margin-bottom: 1rem;">
+                    0x742d35Cc6634C0532925a3b844Bc9e7595f89Af
+                </div>
+                <button class="btn btn-primary" onclick="copyAddress()">Copy Address</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stake Modal -->
+    <div class="modal" id="stakeModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Stake VNC</h3>
+                <button class="close-btn" onclick="closeModal('stake')">&times;</button>
+            </div>
+            <form onsubmit="stakeTokens(event)">
+                <div class="form-group">
+                    <label class="form-label">Amount to Stake</label>
+                    <div class="input-group">
+                        <input type="number" class="form-input" placeholder="0.00" step="0.01" required>
+                        <button type="button" class="max-btn">MAX</button>
+                    </div>
+                    <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.5rem;">
+                        Available: 12,458.75 VNC
+                    </p>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Validator</label>
+                    <select class="form-input">
+                        <option>AlphaNode (18.5% APY)</option>
+                        <option>BetaStake (17.8% APY)</option>
+                        <option>GammaVal (19.2% APY)</option>
+                        <option>DeltaChain (18.0% APY)</option>
+                    </select>
+                </div>
+                <div style="background: rgba(168, 85, 247, 0.1); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                    <p style="font-size: 0.9rem; color: var(--text-secondary);">
+                        <strong>Lock Period:</strong> 30 days<br>
+                        <strong>Estimated APY:</strong> 18.5%<br>
+                        <strong>Minimum Stake:</strong> 100 VNC
+                    </p>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Stake Tokens</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Swap Modal -->
+    <div class="modal" id="swapModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Swap Tokens</h3>
+                <button class="close-btn" onclick="closeModal('swap')">&times;</button>
+            </div>
+            <form onsubmit="swapTokens(event)">
+                <div class="form-group">
+                    <label class="form-label">From</label>
+                    <div class="input-group">
+                        <input type="number" class="form-input" placeholder="0.00" step="0.01" required>
+                        <button type="button" class="max-btn">MAX</button>
+                    </div>
+                    <select class="form-input" style="margin-top: 0.5rem;">
+                        <option>VNC</option>
+                        <option>wVNC</option>
+                        <option>DFT</option>
+                    </select>
+                </div>
+                <div style="text-align: center; margin: 1rem 0; font-size: 1.5rem;">
+                    ⇅
+                </div>
+                <div class="form-group">
+                    <label class="form-label">To (estimated)</label>
+                    <input type="text" class="form-input" placeholder="0.00" readonly>
+                    <select class="form-input" style="margin-top: 0.5rem;">
+                        <option>wVNC</option>
+                        <option>VNC</option>
+                        <option>DFT</option>
+                    </select>
+                </div>
+                <div style="background: rgba(14, 165, 233, 0.1); padding: 1rem; border-radius: 8px; margin: 1rem 0; font-size: 0.9rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <span style="color: var(--text-secondary);">Rate:</span>
+                        <span>1 VNC = 1.002 wVNC</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <span style="color: var(--text-secondary);">Fee:</span>
+                        <span>0.3%</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="color: var(--text-secondary);">Slippage:</span>
+                        <span>0.5%</span>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Swap Tokens</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const generateHash = () => {
+            let hash = '0x';
+            for (let i = 0; i < 40; i++) {
+                hash += Math.floor(Math.random() * 16).toString(16);
+            }
+            return hash;
+        };
+
+        const shortenHash = (hash) => {
+            return hash.slice(0, 6) + '...' + hash.slice(-4);
+        };
+
+        function generateTransactions() {
+            const list = document.getElementById('transactionsList');
+            list.innerHTML = '';
+            
+            const types = [
+                { type: 'send', label: 'Sent to', icon: '📤' },
+                { type: 'receive', label: 'Received from', icon: '📥' },
+                { type: 'stake', label: 'Staked', icon: '💰' },
+                { type: 'swap', label: 'Swapped', icon: '🔄' }
+            ];
+            
+            for (let i = 0; i < 8; i++) {
+                const txType = types[Math.floor(Math.random() * types.length)];
+                const amount = (Math.random() * 1000).toFixed(2);
+                const time = Math.floor(Math.random() * 24);
+                const address = shortenHash(generateHash());
+                
+                const txHTML = `
+                    <div class="transaction-item">
+                        <div class="tx-info">
+                            <div class="tx-icon ${txType.type === 'send' || txType.type === 'stake' ? 'send' : 'receive'}">
+                                ${txType.icon}
+                            </div>
+                            <div class="tx-details">
+                                <h4>${txType.label} ${address}</h4>
+                                <p>${time}h ago</p>
+                            </div>
+                        </div>
+                        <div class="tx-amount">
+                            <div class="tx-value">${txType.type === 'receive' ? '+' : '-'}${amount} VNC</div>
+                            <div class="tx-status" style="color: var(--success);">Confirmed</div>
+                        </div>
+                    </div>
+                `;
+                list.innerHTML += txHTML;
+            }
+        }
+
+        function openModal(type) {
+            const modal = document.getElementById(type + 'Modal');
+            modal.classList.add('active');
+        }
+
+        function closeModal(type) {
+            const modal = document.getElementById(type + 'Modal');
+            modal.classList.remove('active');
+        }
+
+        function copyAddress() {
+            const address = '0x742d35Cc6634C0532925a3b844Bc9e7595f89Af';
+            navigator.clipboard.writeText(address).then(() => {
+                alert('Address copied to clipboard!');
+            });
+        }
+
+        function sendTransaction(e) {
+            e.preventDefault();
+            alert('Transaction submitted!\n\nIn a real wallet, this would:\n- Sign the transaction\n- Broadcast to the network\n- Show transaction hash\n- Update balance');
+            closeModal('send');
+        }
+
+        function stakeTokens(e) {
+            e.preventDefault();
+            alert('Staking successful!\n\nYour tokens have been staked.\nYou will start earning rewards immediately.');
+            closeModal('stake');
+        }
+
+        function swapTokens(e) {
+            e.preventDefault();
+            alert('Swap executed!\n\nYour tokens have been swapped at the current market rate.');
+            closeModal('swap');
+        }
+
+        // Close modal when clicking outside
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+        });
+
+        // Initialize
+        generateTransactions();
+
+        // Update transactions periodically
+        setInterval(() => {
+            if (Math.random() > 0.8) {
+                generateTransactions();
+            }
+        }, 10000);
+    </script>
+</body>
+</html>

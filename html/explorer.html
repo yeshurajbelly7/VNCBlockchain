@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blockchain Explorer | VNC-20</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0ea5e9;
+            --primary-dark: #0284c7;
+            --quantum: #a855f7;
+            --quantum-dark: #9333ea;
+            --bg-dark: #0f0f1e;
+            --bg-darker: #060610;
+            --card-bg: #1a1a2e;
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --border: #2d2d44;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--bg-darker) 0%, var(--bg-dark) 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 1rem 0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--primary), var(--quantum));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--quantum));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+
+        .search-bar {
+            flex: 1;
+            max-width: 600px;
+            margin: 0 2rem;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 3rem 1rem 1rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, var(--primary), var(--quantum));
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .page-header {
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--primary), var(--quantum));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 2rem 0;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1rem;
+        }
+
+        .tab {
+            padding: 0.75rem 2rem;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px 8px 0 0;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, var(--primary), var(--quantum));
+            color: white;
+        }
+
+        .tab:hover:not(.active) {
+            color: var(--primary);
+            background: rgba(14, 165, 233, 0.1);
+        }
+
+        .data-table {
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .table-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: rgba(14, 165, 233, 0.05);
+            padding: 1rem;
+            text-align: left;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        td {
+            padding: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        tr:hover {
+            background: rgba(14, 165, 233, 0.05);
+        }
+
+        .hash {
+            font-family: 'Courier New', monospace;
+            color: var(--quantum);
+        }
+
+        .address {
+            font-family: 'Courier New', monospace;
+            color: var(--primary);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .badge-warning {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--primary), var(--quantum));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 2rem 0;
+        }
+
+        .page-btn {
+            padding: 0.5rem 1rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .page-btn:hover {
+            border-color: var(--primary);
+            background: rgba(14, 165, 233, 0.1);
+        }
+
+        .page-btn.active {
+            background: linear-gradient(135deg, var(--primary), var(--quantum));
+            border-color: transparent;
+        }
+
+        .detail-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-row {
+            display: flex;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            width: 200px;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .detail-value {
+            flex: 1;
+            color: var(--text-primary);
+        }
+
+        @media (max-width: 768px) {
+            .search-bar {
+                margin: 1rem 0;
+            }
+
+            .nav {
+                flex-wrap: wrap;
+            }
+
+            .tabs {
+                flex-wrap: wrap;
+            }
+
+            table {
+                font-size: 0.85rem;
+            }
+
+            th, td {
+                padding: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="index.html" class="logo">
+                    <div class="logo-icon">V</div>
+                    <span>VNC-20 Explorer</span>
+                </a>
+                <div class="search-bar">
+                    <input type="text" class="search-input" placeholder="Search by Block / Txn Hash / Address..." id="searchInput">
+                    <button class="search-btn" onclick="search()">Search</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="page-header">
+        <div class="container">
+            <h1 class="page-title">Blockchain <span class="gradient-text">Explorer</span></h1>
+            <p style="color: var(--text-secondary);">Real-time network data and transaction history</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-value" id="totalBlocks">12,845,792</div>
+                <div class="stat-label">Total Blocks</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalTxs">8.7B</div>
+                <div class="stat-label">Total Transactions</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="avgBlockTime">2.3s</div>
+                <div class="stat-label">Avg Block Time</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="currentTPS">72,453</div>
+                <div class="stat-label">Current TPS</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">$0.00012</div>
+                <div class="stat-label">Avg Gas Price</div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('blocks')">Blocks</button>
+            <button class="tab" onclick="showTab('transactions')">Transactions</button>
+            <button class="tab" onclick="showTab('validators')">Validators</button>
+            <button class="tab" onclick="showTab('tokens')">Tokens</button>
+        </div>
+
+        <!-- Blocks Tab -->
+        <div id="blocksTab" class="tab-content">
+            <div class="data-table">
+                <div class="table-header">
+                    <div class="table-title">Latest Blocks</div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Block</th>
+                            <th>Time</th>
+                            <th>Txns</th>
+                            <th>Validator</th>
+                            <th>Size</th>
+                            <th>Gas Used</th>
+                        </tr>
+                    </thead>
+                    <tbody id="blocksTableBody">
+                        <!-- Blocks will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="pagination">
+                <button class="page-btn">←</button>
+                <button class="page-btn active">1</button>
+                <button class="page-btn">2</button>
+                <button class="page-btn">3</button>
+                <button class="page-btn">...</button>
+                <button class="page-btn">50</button>
+                <button class="page-btn">→</button>
+            </div>
+        </div>
+
+        <!-- Transactions Tab -->
+        <div id="transactionsTab" class="tab-content" style="display: none;">
+            <div class="data-table">
+                <div class="table-header">
+                    <div class="table-title">Latest Transactions</div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Txn Hash</th>
+                            <th>Block</th>
+                            <th>Time</th>
+                            <th>From</th>
+                            <th>To</th>
+                            <th>Value</th>
+                            <th>Fee</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactionsTableBody">
+                        <!-- Transactions will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="pagination">
+                <button class="page-btn">←</button>
+                <button class="page-btn active">1</button>
+                <button class="page-btn">2</button>
+                <button class="page-btn">3</button>
+                <button class="page-btn">...</button>
+                <button class="page-btn">100</button>
+                <button class="page-btn">→</button>
+            </div>
+        </div>
+
+        <!-- Validators Tab -->
+        <div id="validatorsTab" class="tab-content" style="display: none;">
+            <div class="data-table">
+                <div class="table-header">
+                    <div class="table-title">Active Validators</div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Validator</th>
+                            <th>Status</th>
+                            <th>Staked</th>
+                            <th>Commission</th>
+                            <th>Blocks Proposed</th>
+                            <th>Uptime</th>
+                        </tr>
+                    </thead>
+                    <tbody id="validatorsTableBody">
+                        <!-- Validators will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tokens Tab -->
+        <div id="tokensTab" class="tab-content" style="display: none;">
+            <div class="data-table">
+                <div class="table-header">
+                    <div class="table-title">VNC-20 Tokens</div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Token</th>
+                            <th>Contract</th>
+                            <th>Price</th>
+                            <th>Market Cap</th>
+                            <th>Holders</th>
+                            <th>Transfers (24h)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tokensTableBody">
+                        <!-- Tokens will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const generateHash = (len = 66) => {
+            let hash = '0x';
+            for (let i = 0; i < len - 2; i++) {
+                hash += Math.floor(Math.random() * 16).toString(16);
+            }
+            return hash;
+        };
+
+        const generateAddress = () => {
+            return generateHash(42);
+        };
+
+        const shortenHash = (hash) => {
+            return hash.slice(0, 10) + '...' + hash.slice(-8);
+        };
+
+        const timeAgo = (seconds) => {
+            if (seconds < 60) return `${seconds}s ago`;
+            return `${Math.floor(seconds / 60)}m ago`;
+        };
+
+        function generateBlocks() {
+            const tbody = document.getElementById('blocksTableBody');
+            tbody.innerHTML = '';
+            
+            let baseBlock = 12845792;
+            for (let i = 0; i < 20; i++) {
+                const blockNum = baseBlock - i;
+                const txCount = Math.floor(150 + Math.random() * 300);
+                const timestamp = 5 + i * 2.3;
+                const validator = Math.floor(Math.random() * 87) + 1;
+                const size = (45 + Math.random() * 30).toFixed(2);
+                const gasUsed = (Math.random() * 30 + 70).toFixed(1);
+                
+                const row = `
+                    <tr onclick="viewBlock(${blockNum})">
+                        <td><span class="hash">${blockNum.toLocaleString()}</span></td>
+                        <td>${timeAgo(Math.floor(timestamp))}</td>
+                        <td>${txCount}</td>
+                        <td>Validator #${validator}</td>
+                        <td>${size} KB</td>
+                        <td>${gasUsed}%</td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            }
+        }
+
+        function generateTransactions() {
+            const tbody = document.getElementById('transactionsTableBody');
+            tbody.innerHTML = '';
+            
+            let baseBlock = 12845792;
+            for (let i = 0; i < 20; i++) {
+                const txHash = generateHash();
+                const blockNum = baseBlock - Math.floor(i / 5);
+                const timestamp = 3 + i * 1.5;
+                const from = generateAddress();
+                const to = generateAddress();
+                const value = (Math.random() * 10000).toFixed(4);
+                const fee = (Math.random() * 0.002).toFixed(6);
+                
+                const row = `
+                    <tr onclick="viewTransaction('${txHash}')">
+                        <td><span class="hash">${shortenHash(txHash)}</span></td>
+                        <td>${blockNum.toLocaleString()}</td>
+                        <td>${timeAgo(Math.floor(timestamp))}</td>
+                        <td><span class="address">${shortenHash(from)}</span></td>
+                        <td><span class="address">${shortenHash(to)}</span></td>
+                        <td>${value} VNC</td>
+                        <td>$${fee}</td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            }
+        }
+
+        function generateValidators() {
+            const tbody = document.getElementById('validatorsTableBody');
+            tbody.innerHTML = '';
+            
+            const names = ['AlphaNode', 'BetaStake', 'GammaVal', 'DeltaChain', 'EpsilonNet', 
+                          'ZetaStake', 'EtaNode', 'ThetaVal', 'IotaChain', 'KappaNet'];
+            
+            for (let i = 0; i < 10; i++) {
+                const staked = (1000000 + Math.random() * 5000000).toFixed(0);
+                const commission = (Math.random() * 10).toFixed(1);
+                const blocks = Math.floor(50000 + Math.random() * 200000);
+                const uptime = (99 + Math.random()).toFixed(2);
+                
+                const row = `
+                    <tr>
+                        <td><strong>${i + 1}</strong></td>
+                        <td>${names[i]}</td>
+                        <td><span class="badge badge-success">Active</span></td>
+                        <td>${parseInt(staked).toLocaleString()} VNC</td>
+                        <td>${commission}%</td>
+                        <td>${blocks.toLocaleString()}</td>
+                        <td>${uptime}%</td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            }
+        }
+
+        function generateTokens() {
+            const tbody = document.getElementById('tokensTableBody');
+            tbody.innerHTML = '';
+            
+            const tokens = [
+                { name: 'VNC Coin', symbol: 'VNC', price: '2.45', mcap: '24.5B', holders: '1.2M' },
+                { name: 'Wrapped VNC', symbol: 'wVNC', price: '2.45', mcap: '2.1B', holders: '450K' },
+                { name: 'VNC Stake', symbol: 'vVNC', price: '2.67', mcap: '856M', holders: '87K' },
+                { name: 'DeFi Token', symbol: 'DFT', price: '12.34', mcap: '456M', holders: '234K' },
+                { name: 'Game Token', symbol: 'GMT', price: '0.45', mcap: '123M', holders: '567K' },
+                { name: 'Stable VNC', symbol: 'sVNC', price: '1.00', mcap: '789M', holders: '345K' },
+                { name: 'NFT Token', symbol: 'NFT', price: '45.67', mcap: '234M', holders: '89K' },
+                { name: 'DAO Token', symbol: 'DAO', price: '8.90', mcap: '178M', holders: '67K' }
+            ];
+            
+            tokens.forEach((token, i) => {
+                const contract = generateAddress();
+                const transfers = Math.floor(10000 + Math.random() * 50000);
+                
+                const row = `
+                    <tr>
+                        <td><strong>${token.name}</strong> (${token.symbol})</td>
+                        <td><span class="address">${shortenHash(contract)}</span></td>
+                        <td>$${token.price}</td>
+                        <td>$${token.mcap}</td>
+                        <td>${token.holders}</td>
+                        <td>${transfers.toLocaleString()}</td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.style.display = 'none';
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName + 'Tab').style.display = 'block';
+            event.target.classList.add('active');
+        }
+
+        function viewBlock(blockNum) {
+            alert(`Viewing details for Block #${blockNum}\n\nIn a full implementation, this would show:\n- Block hash\n- Timestamp\n- Validator\n- All transactions\n- Gas used\n- State root`);
+        }
+
+        function viewTransaction(txHash) {
+            alert(`Viewing transaction: ${shortenHash(txHash)}\n\nIn a full implementation, this would show:\n- Status\n- Block confirmation\n- From/To addresses\n- Value transferred\n- Gas used\n- Input data`);
+        }
+
+        function search() {
+            const query = document.getElementById('searchInput').value;
+            if (query.trim()) {
+                alert(`Searching for: ${query}\n\nThis would search:\n- Block numbers\n- Transaction hashes\n- Wallet addresses\n- Contract addresses`);
+            }
+        }
+
+        // Update metrics
+        function updateMetrics() {
+            const currentTPS = Math.floor(65000 + Math.random() * 15000);
+            document.getElementById('currentTPS').textContent = currentTPS.toLocaleString();
+        }
+
+        // Initialize
+        generateBlocks();
+        generateTransactions();
+        generateValidators();
+        generateTokens();
+
+        // Update every 3 seconds
+        setInterval(() => {
+            updateMetrics();
+            if (Math.random() > 0.7) {
+                generateBlocks();
+                generateTransactions();
+            }
+        }, 3000);
+
+        // Search on enter
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                search();
+            }
+        });
+    </script>
+</body>
+</html>

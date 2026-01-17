@@ -1,0 +1,61 @@
+{
+  "name": "vnc-blockchain",
+  "version": "1.0.0",
+  "description": "VNC-20 Blockchain - Next-Generation Quantum-Ready High-Performance Blockchain",
+  "private": true,
+  "workspaces": [
+    "frontend/*",
+    "backend/*",
+    "blockchain/*",
+    "contracts",
+    "tools/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm:dev:*\"",
+    "dev:public": "npm run dev --workspace=frontend/public-website",
+    "dev:wallet": "npm run dev --workspace=frontend/user-wallet",
+    "dev:developer": "npm run dev --workspace=frontend/developer-portal",
+    "dev:validator": "npm run dev --workspace=frontend/validator-dashboard",
+    "dev:governance": "npm run dev --workspace=frontend/governance-portal",
+    "dev:admin": "npm run dev --workspace=frontend/admin-dashboard",
+    "dev:api": "npm run dev --workspace=backend/api-gateway",
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces",
+    "lint": "npm run lint --workspaces",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "db:migrate": "npm run migrate --workspace=backend/api-gateway",
+    "db:seed": "npm run seed --workspace=backend/api-gateway"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "concurrently": "^8.2.2",
+    "prettier": "^3.1.0",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "keywords": [
+    "blockchain",
+    "cryptocurrency",
+    "quantum-secure",
+    "evm-compatible",
+    "web3",
+    "dpos",
+    "bft-consensus",
+    "high-performance"
+  ],
+  "author": "VNC-20 Foundation",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vnc20/vnc-blockchain.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vnc20/vnc-blockchain/issues"
+  },
+  "homepage": "https://vnc20.io"
+}

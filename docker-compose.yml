@@ -1,0 +1,270 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: vnc-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: vnc_blockchain
+      POSTGRES_USER: vnc_admin
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-vnc_secure_password}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - vnc-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vnc_admin"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: vnc-redis
+    restart: unless-stopped
+    command: redis-server --requirepass ${REDIS_PASSWORD:-vnc_redis_password}
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - vnc-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # MongoDB for Analytics
+  mongodb:
+    image: mongo:7
+    container_name: vnc-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: vnc_admin
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-vnc_mongo_password}
+      MONGO_INITDB_DATABASE: vnc_analytics
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - vnc-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # API Gateway
+  api-gateway:
+    build:
+      context: ./backend/api-gateway
+      dockerfile: Dockerfile
+    container_name: vnc-api-gateway
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      DB_HOST: postgres
+      REDIS_HOST: redis
+      MONGO_URI: mongodb://vnc_admin:${MONGO_PASSWORD:-vnc_mongo_password}@mongodb:27017/vnc_analytics
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+    volumes:
+      - ./backend/api-gateway:/app
+      - /app/node_modules
+    networks:
+      - vnc-network
+    command: npm run dev
+
+  # Blockchain RPC Server
+  rpc-server:
+    build:
+      context: ./backend/rpc-server
+      dockerfile: Dockerfile
+    container_name: vnc-rpc-server
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      REDIS_HOST: redis
+    ports:
+      - "8545:8545"
+      - "8546:8546"
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./backend/rpc-server:/app
+      - /app/node_modules
+    networks:
+      - vnc-network
+    command: npm run dev
+
+  # Blockchain Indexer
+  indexer:
+    build:
+      context: ./backend/indexer
+      dockerfile: Dockerfile
+    container_name: vnc-indexer
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      DB_HOST: postgres
+      REDIS_HOST: redis
+      MONGO_URI: mongodb://vnc_admin:${MONGO_PASSWORD:-vnc_mongo_password}@mongodb:27017/vnc_analytics
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+    volumes:
+      - ./backend/indexer:/app
+      - /app/node_modules
+    networks:
+      - vnc-network
+    command: npm run dev
+
+  # Public Website Frontend
+  public-website:
+    build:
+      context: ./frontend/public-website
+      dockerfile: Dockerfile
+    container_name: vnc-public-website
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_API_URL: http://localhost:3000/api/v1
+      NEXT_PUBLIC_RPC_URL: http://localhost:8545
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./frontend/public-website:/app
+      - /app/node_modules
+      - /app/.next
+    networks:
+      - vnc-network
+    command: npm run dev
+
+  # User Wallet Frontend
+  user-wallet:
+    build:
+      context: ./frontend/user-wallet
+      dockerfile: Dockerfile
+    container_name: vnc-user-wallet
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_API_URL: http://localhost:3000/api/v1
+      NEXT_PUBLIC_RPC_URL: http://localhost:8545
+    ports:
+      - "3002:3000"
+    volumes:
+      - ./frontend/user-wallet:/app
+      - /app/node_modules
+      - /app/.next
+    networks:
+      - vnc-network
+    command: npm run dev
+
+  # Developer Portal Frontend
+  developer-portal:
+    build:
+      context: ./frontend/developer-portal
+      dockerfile: Dockerfile
+    container_name: vnc-developer-portal
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_API_URL: http://localhost:3000/api/v1
+      NEXT_PUBLIC_RPC_URL: http://localhost:8545
+    ports:
+      - "3003:3000"
+    volumes:
+      - ./frontend/developer-portal:/app
+      - /app/node_modules
+      - /app/.next
+    networks:
+      - vnc-network
+    command: npm run dev
+
+  # Validator Dashboard Frontend
+  validator-dashboard:
+    build:
+      context: ./frontend/validator-dashboard
+      dockerfile: Dockerfile
+    container_name: vnc-validator-dashboard
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_API_URL: http://localhost:3000/api/v1
+      NEXT_PUBLIC_RPC_URL: http://localhost:8545
+    ports:
+      - "3004:3000"
+    volumes:
+      - ./frontend/validator-dashboard:/app
+      - /app/node_modules
+      - /app/.next
+    networks:
+      - vnc-network
+    command: npm run dev
+
+  # Prometheus for Metrics
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: vnc-prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    networks:
+      - vnc-network
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+
+  # Grafana for Visualization
+  grafana:
+    image: grafana/grafana:latest
+    container_name: vnc-grafana
+    restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-admin}
+      GF_USERS_ALLOW_SIGN_UP: false
+    ports:
+      - "3007:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources
+    depends_on:
+      - prometheus
+    networks:
+      - vnc-network
+
+networks:
+  vnc-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:
+  mongodb_data:
+  prometheus_data:
+  grafana_data:

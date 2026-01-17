@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VNC-20 Blockchain | Quantum-Ready High-Performance Blockchain</title>
+    <meta name="description" content="Next-generation blockchain platform with 400,000+ TPS, sub-second finality, and post-quantum security.">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0ea5e9;
+            --primary-dark: #0284c7;
+            --quantum: #a855f7;
+            --quantum-dark: #9333ea;
+            --bg-dark: #0f0f1e;
+            --bg-darker: #060610;
+            --card-bg: #1a1a2e;
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --border: #2d2d44;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--bg-darker) 0%, var(--bg-dark) 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Header Styles */
+        .header {
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 1rem 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--primary), var(--quantum));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--quantum));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(14, 165, 233, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--card-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 6rem 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -50%;
+            left: -20%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(14, 165, 233, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: pulse 4s ease-in-out infinite 2s;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--primary), var(--quantum));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 4rem;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-stat {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .hero-stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--primary), var(--quantum));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Network Stats Section */
+        .section {
+            padding: 4rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(14, 165, 233, 0.2);
+        }
+
+        .stat-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .stat-card-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary), var(--quantum));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .stat-card-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .stat-card-change {
+            color: #10b981;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Live Metrics */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .metric-value {
+            font-size: 3rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--primary), var(--quantum));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 1rem 0;
+        }
+
+        .chart-container {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-top: 2rem;
+        }
+
+        .chart {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(to top, rgba(14, 165, 233, 0.1) 0%, transparent 100%);
+            border-radius: 8px;
+            position: relative;
+        }
+
+        /* Features Section */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--quantum);
+            box-shadow: 0 10px 30px rgba(168, 85, 247, 0.2);
+        }
+
+        .feature-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--primary), var(--quantum));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-description {
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        /* Blocks & Transactions */
+        .two-column {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 2rem;
+        }
+
+        .data-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .data-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .data-card-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .data-item {
+            background: rgba(14, 165, 233, 0.05);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            transition: all 0.3s;
+        }
+
+        .data-item:hover {
+            border-color: var(--primary);
+            background: rgba(14, 165, 233, 0.1);
+        }
+
+        .data-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .data-item-id {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .data-item-details {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .hash {
+            font-family: 'Courier New', monospace;
+            color: var(--quantum);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--card-bg);
+            border-top: 1px solid var(--border);
+            padding: 3rem 0 1rem;
+            margin-top: 4rem;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h4 {
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            background: rgba(14, 165, 233, 0.1);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .social-link:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.2rem;
+            }
+
+            .hero-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: rgba(168, 85, 247, 0.2);
+            color: var(--quantum);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .live-indicator {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            display: inline-block;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <div class="logo">
+                    <div class="logo-icon">V</div>
+                    <span>VNC-20</span>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#network">Network</a></li>
+                    <li><a href="explorer.html">Explorer</a></li>
+                    <li><a href="wallet.html">Wallet</a></li>
+                    <li><a href="docs.html">Docs</a></li>
+                </ul>
+                <div>
+                    <a href="wallet.html" class="btn btn-secondary" style="margin-right: 1rem;">Open Wallet</a>
+                    <a href="#testnet" class="btn btn-primary">Try Testnet</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="hero-content">
+                <div class="badge">🔐 Quantum-Ready Security</div>
+                <h1>The Next-Generation <br><span class="gradient-text">Blockchain</span></h1>
+                <p>High-performance, EVM-compatible blockchain with <strong>400,000+ TPS</strong>, <strong>sub-second finality</strong>, and <strong>post-quantum security</strong>.</p>
+                
+                <div class="hero-buttons">
+                    <a href="docs.html" class="btn btn-primary">Read Whitepaper</a>
+                    <a href="explorer.html" class="btn btn-secondary">Explore Network</a>
+                </div>
+
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <div class="hero-stat-value">400K+</div>
+                        <div class="hero-stat-label">Transactions Per Second</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-value">&lt;1s</div>
+                        <div class="hero-stat-label">Block Finality</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-value">100%</div>
+                        <div class="hero-stat-label">EVM Compatible</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Network Stats -->
+    <section class="section" id="network">
+        <div class="container">
+            <h2 class="section-title">Network Statistics <span class="live-indicator"></span></h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div class="stat-card-icon">👥</div>
+                    </div>
+                    <div class="stat-card-value" id="validators">87</div>
+                    <div class="stat-card-label">Active Validators</div>
+                    <div class="stat-card-change">+3 today</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div class="stat-card-icon">💰</div>
+                    </div>
+                    <div class="stat-card-value">2.4B VNC</div>
+                    <div class="stat-card-label">Total Staked</div>
+                    <div class="stat-card-change">24% of supply</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div class="stat-card-icon">📊</div>
+                    </div>
+                    <div class="stat-card-value">99.98%</div>
+                    <div class="stat-card-label">Network Uptime</div>
+                    <div class="stat-card-change">365 days</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div class="stat-card-icon">⏱️</div>
+                    </div>
+                    <div class="stat-card-value">2.3s</div>
+                    <div class="stat-card-label">Avg Block Time</div>
+                    <div class="stat-card-change">Sub-second finality</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Live Metrics -->
+    <section class="section" style="background: rgba(15, 15, 30, 0.5);">
+        <div class="container">
+            <h2 class="section-title">Live Performance Metrics</h2>
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="stat-card-label">Current TPS</div>
+                    <div class="metric-value" id="tps">72,453</div>
+                    <div class="stat-card-change">+12.5% from average</div>
+                </div>
+                <div class="metric-card">
+                    <div class="stat-card-label">Gas Price</div>
+                    <div class="metric-value">$0.00012</div>
+                    <div class="stat-card-change">Ultra-low fees</div>
+                </div>
+                <div class="metric-card">
+                    <div class="stat-card-label">Block Time</div>
+                    <div class="metric-value" id="blockTime">2.3s</div>
+                    <div class="stat-card-change">Lightning fast</div>
+                </div>
+            </div>
+            <div class="chart-container">
+                <h3>Transactions Per Second (Last 30 Minutes)</h3>
+                <div class="chart" id="tpsChart"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Latest Blocks & Transactions -->
+    <section class="section">
+        <div class="container">
+            <div class="two-column">
+                <!-- Latest Blocks -->
+                <div class="data-card">
+                    <div class="data-card-header">
+                        <h3 class="data-card-title">Latest Blocks</h3>
+                        <a href="explorer.html" style="color: var(--primary); text-decoration: none;">View All →</a>
+                    </div>
+                    <div id="latestBlocks">
+                        <!-- Blocks will be inserted here -->
+                    </div>
+                </div>
+
+                <!-- Latest Transactions -->
+                <div class="data-card">
+                    <div class="data-card-header">
+                        <h3 class="data-card-title">Latest Transactions</h3>
+                        <a href="explorer.html" style="color: var(--primary); text-decoration: none;">View All →</a>
+                    </div>
+                    <div id="latestTransactions">
+                        <!-- Transactions will be inserted here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="section" id="features" style="background: rgba(15, 15, 30, 0.5);">
+        <div class="container">
+            <h2 class="section-title">Why Choose VNC-20?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3 class="feature-title">Ultra-High Performance</h3>
+                    <p class="feature-description">Process up to 400,000 transactions per second with parallel execution and horizontal sharding.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔐</div>
+                    <h3 class="feature-title">Quantum-Ready Security</h3>
+                    <p class="feature-description">Post-quantum cryptography roadmap with CRYSTALS-Dilithium and Falcon for future-proof protection.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔗</div>
+                    <h3 class="feature-title">100% EVM Compatible</h3>
+                    <p class="feature-description">Deploy existing Solidity smart contracts without modification. Full Ethereum ecosystem compatibility.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📈</div>
+                    <h3 class="feature-title">Sub-Second Finality</h3>
+                    <p class="feature-description">Deterministic finality within 0.5-1 second. No probabilistic re-orgs or long confirmation times.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌍</div>
+                    <h3 class="feature-title">Horizontal Scalability</h3>
+                    <p class="feature-description">Performance increases linearly with additional nodes and shards. Built for global adoption.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🏢</div>
+                    <h3 class="feature-title">Enterprise Grade</h3>
+                    <p class="feature-description">Optional compliance layers for government and enterprise use cases without compromising decentralization.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <div class="logo" style="margin-bottom: 1rem;">
+                        <div class="logo-icon">V</div>
+                        <span>VNC-20</span>
+                    </div>
+                    <p style="color: var(--text-secondary); margin-bottom: 1rem;">The next-generation quantum-ready blockchain platform.</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link">𝕏</a>
+                        <a href="#" class="social-link">💬</a>
+                        <a href="#" class="social-link">📱</a>
+                        <a href="#" class="social-link">⚡</a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Product</h4>
+                    <ul class="footer-links">
+                        <li><a href="explorer.html">Explorer</a></li>
+                        <li><a href="wallet.html">Wallet</a></li>
+                        <li><a href="#staking">Staking</a></li>
+                        <li><a href="#governance">Governance</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Developers</h4>
+                    <ul class="footer-links">
+                        <li><a href="docs.html">Documentation</a></li>
+                        <li><a href="#api">API Reference</a></li>
+                        <li><a href="#github">GitHub</a></li>
+                        <li><a href="#bug-bounty">Bug Bounty</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul class="footer-links">
+                        <li><a href="docs.html">Whitepaper</a></li>
+                        <li><a href="#blog">Blog</a></li>
+                        <li><a href="#brand">Brand Kit</a></li>
+                        <li><a href="#support">Support</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 VNC-20 Foundation. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Simulate real-time data updates
+        function updateMetrics() {
+            // Update TPS
+            const tps = Math.floor(65000 + Math.random() * 15000);
+            document.getElementById('tps').textContent = tps.toLocaleString();
+
+            // Update Block Time
+            const blockTime = (2.0 + Math.random() * 0.8).toFixed(1);
+            document.getElementById('blockTime').textContent = blockTime + 's';
+
+            // Update Validators occasionally
+            if (Math.random() > 0.95) {
+                const validators = 87 + Math.floor(Math.random() * 5);
+                document.getElementById('validators').textContent = validators;
+            }
+        }
+
+        // Generate random blocks
+        function generateBlocks() {
+            const blocksContainer = document.getElementById('latestBlocks');
+            blocksContainer.innerHTML = '';
+            
+            for (let i = 0; i < 5; i++) {
+                const blockNum = 12845792 - i;
+                const txCount = Math.floor(150 + Math.random() * 200);
+                const timestamp = (5 + i * 3);
+                
+                const blockHTML = `
+                    <div class="data-item">
+                        <div class="data-item-header">
+                            <div class="data-item-id">Block #${blockNum.toLocaleString()}</div>
+                            <div>${timestamp}s ago</div>
+                        </div>
+                        <div class="data-item-details">
+                            ${txCount} transactions • Validator #${Math.floor(Math.random() * 100)}
+                        </div>
+                    </div>
+                `;
+                blocksContainer.innerHTML += blockHTML;
+            }
+        }
+
+        // Generate random transactions
+        function generateTransactions() {
+            const txContainer = document.getElementById('latestTransactions');
+            txContainer.innerHTML = '';
+            
+            const generateHash = () => '0x' + Array.from({length: 8}, () => 
+                Math.floor(Math.random() * 16).toString(16)).join('') + '...';
+            
+            for (let i = 0; i < 5; i++) {
+                const amount = (Math.random() * 5000).toFixed(2);
+                const timestamp = (3 + i * 3);
+                
+                const txHTML = `
+                    <div class="data-item">
+                        <div class="data-item-header">
+                            <div class="data-item-id hash">${generateHash()}</div>
+                            <div>${timestamp}s ago</div>
+                        </div>
+                        <div class="data-item-details">
+                            ${generateHash()} → ${generateHash()} • ${amount} VNC
+                        </div>
+                    </div>
+                `;
+                txContainer.innerHTML += txHTML;
+            }
+        }
+
+        // Initialize and update
+        updateMetrics();
+        generateBlocks();
+        generateTransactions();
+
+        // Update every 3 seconds
+        setInterval(() => {
+            updateMetrics();
+            if (Math.random() > 0.7) {
+                generateBlocks();
+                generateTransactions();
+            }
+        }, 3000);
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

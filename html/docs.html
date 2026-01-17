@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation | VNC-20</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0ea5e9;
+            --primary-dark: #0284c7;
+            --quantum: #a855f7;
+            --quantum-dark: #9333ea;
+            --bg-dark: #0f0f1e;
+            --bg-darker: #060610;
+            --card-bg: #1a1a2e;
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --border: #2d2d44;
+            --code-bg: #1e1e2e;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--bg-darker) 0%, var(--bg-dark) 100%);
+            color: var(--text-primary);
+            line-height: 1.8;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 1rem 0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--primary), var(--quantum));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--quantum));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+
+        .docs-layout {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 3rem;
+            margin: 2rem auto;
+            max-width: 1400px;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 80px;
+            height: fit-content;
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .sidebar h3 {
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .sidebar-section {
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-links {
+            list-style: none;
+        }
+
+        .sidebar-links li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s;
+            display: block;
+            padding: 0.5rem 0;
+        }
+
+        .sidebar-links a:hover,
+        .sidebar-links a.active {
+            color: var(--primary);
+        }
+
+        .content {
+            background: var(--card-bg);
+            padding: 3rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--quantum));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin: 2rem 0 1rem;
+            color: var(--primary);
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            margin: 1.5rem 0 0.75rem;
+            color: var(--quantum);
+        }
+
+        h4 {
+            font-size: 1.25rem;
+            margin: 1rem 0 0.5rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .intro {
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(14, 165, 233, 0.1);
+            border-left: 4px solid var(--primary);
+            border-radius: 8px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: rgba(168, 85, 247, 0.2);
+            color: var(--quantum);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .feature-box {
+            background: rgba(14, 165, 233, 0.05);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(14, 165, 233, 0.2);
+        }
+
+        .feature-box h4 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        code {
+            background: var(--code-bg);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: var(--quantum);
+            font-size: 0.9rem;
+        }
+
+        pre {
+            background: var(--code-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            border: 1px solid var(--border);
+        }
+
+        pre code {
+            background: transparent;
+            padding: 0;
+            color: var(--text-primary);
+        }
+
+        .info-box {
+            background: rgba(14, 165, 233, 0.1);
+            border-left: 4px solid var(--primary);
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid #f59e0b;
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+
+        .success-box {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid #10b981;
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+
+        ul, ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border: 1px solid var(--border);
+        }
+
+        th {
+            background: rgba(14, 165, 233, 0.1);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin-right: 1rem;
+            margin-top: 1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--card-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .toc {
+            background: rgba(168, 85, 247, 0.1);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            margin: 2rem 0;
+        }
+
+        .toc h3 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+
+        .toc ul {
+            margin-left: 1.5rem;
+        }
+
+        .toc a {
+            color: var(--text-secondary);
+            text-decoration: none;
+        }
+
+        .toc a:hover {
+            color: var(--quantum);
+        }
+
+        @media (max-width: 968px) {
+            .docs-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: relative;
+                top: 0;
+            }
+
+            .content {
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="index.html" class="logo">
+                    <div class="logo-icon">V</div>
+                    <span>VNC-20 Docs</span>
+                </a>
+                <div>
+                    <a href="index.html" class="btn btn-secondary">← Back to Home</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="docs-layout">
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <h3>Getting Started</h3>
+                <ul class="sidebar-links">
+                    <li><a href="#introduction" class="active">Introduction</a></li>
+                    <li><a href="#quick-start">Quick Start</a></li>
+                    <li><a href="#architecture">Architecture</a></li>
+                </ul>
+            </div>
+            
+            <div class="sidebar-section">
+                <h3>Core Concepts</h3>
+                <ul class="sidebar-links">
+                    <li><a href="#consensus">Consensus Mechanism</a></li>
+                    <li><a href="#security">Quantum Security</a></li>
+                    <li><a href="#performance">Performance</a></li>
+                    <li><a href="#tokenomics">Tokenomics</a></li>
+                </ul>
+            </div>
+            
+            <div class="sidebar-section">
+                <h3>Developers</h3>
+                <ul class="sidebar-links">
+                    <li><a href="#smart-contracts">Smart Contracts</a></li>
+                    <li><a href="#api">API Reference</a></li>
+                    <li><a href="#sdk">SDK & Tools</a></li>
+                </ul>
+            </div>
+            
+            <div class="sidebar-section">
+                <h3>Validators</h3>
+                <ul class="sidebar-links">
+                    <li><a href="#staking">Staking Guide</a></li>
+                    <li><a href="#validation">Running a Node</a></li>
+                </ul>
+            </div>
+        </aside>
+
+        <main class="content">
+            <div class="badge">📚 Technical Whitepaper v2.0</div>
+            <h1 id="introduction">VNC-20 Blockchain Documentation</h1>
+            
+            <div class="intro">
+                VNC-20 is a next-generation blockchain platform designed for ultra-high performance, quantum-ready security, and seamless EVM compatibility. Process over 400,000 transactions per second with sub-second finality.
+            </div>
+
+            <div class="toc">
+                <h3>Table of Contents</h3>
+                <ul>
+                    <li><a href="#introduction">1. Introduction</a></li>
+                    <li><a href="#architecture">2. System Architecture</a></li>
+                    <li><a href="#consensus">3. Consensus Mechanism</a></li>
+                    <li><a href="#security">4. Quantum Security</a></li>
+                    <li><a href="#performance">5. Performance & Scalability</a></li>
+                    <li><a href="#tokenomics">6. Tokenomics</a></li>
+                    <li><a href="#smart-contracts">7. Smart Contracts</a></li>
+                    <li><a href="#api">8. API Reference</a></li>
+                </ul>
+            </div>
+
+            <h2 id="quick-start">Quick Start</h2>
+            <p>Get started with VNC-20 in minutes. Follow these simple steps to connect to the network and start building.</p>
+
+            <h3>1. Install the VNC-20 SDK</h3>
+            <pre><code>npm install @vnc20/sdk ethers</code></pre>
+
+            <h3>2. Connect to the Network</h3>
+            <pre><code>import { VNC20Provider } from '@vnc20/sdk';
+
+// Connect to mainnet
+const provider = new VNC20Provider({
+  network: 'mainnet',
+  rpcUrl: 'https://rpc.vnc20.io'
+});
+
+// Get network info
+const networkInfo = await provider.getNetworkInfo();
+console.log(networkInfo);</code></pre>
+
+            <h3>3. Deploy Your First Contract</h3>
+            <pre><code>// Deploy a simple smart contract
+const contract = await provider.deployContract({
+  abi: contractABI,
+  bytecode: contractBytecode,
+  args: [initialValue]
+});
+
+console.log('Contract deployed at:', contract.address);</code></pre>
+
+            <div class="success-box">
+                <strong>✅ Success!</strong> You're now ready to build on VNC-20. Check out our <a href="#smart-contracts" style="color: #10b981;">Smart Contracts Guide</a> for more examples.
+            </div>
+
+            <h2 id="architecture">System Architecture</h2>
+            <p>VNC-20 implements a modular, layered architecture designed for maximum performance and security.</p>
+
+            <div class="feature-grid">
+                <div class="feature-box">
+                    <h4>🔗 Consensus Layer</h4>
+                    <p>DPoS-BFT hybrid consensus with 87 active validators providing sub-second finality.</p>
+                </div>
+                <div class="feature-box">
+                    <h4>⚡ Execution Layer</h4>
+                    <p>Parallel transaction processing with EVM compatibility for existing smart contracts.</p>
+                </div>
+                <div class="feature-box">
+                    <h4>🌐 Network Layer</h4>
+                    <p>P2P networking with libp2p for efficient block propagation and state synchronization.</p>
+                </div>
+                <div class="feature-box">
+                    <h4>💾 Storage Layer</h4>
+                    <p>Merkle Patricia Trie state management with efficient pruning and archival nodes.</p>
+                </div>
+            </div>
+
+            <h3>Layer Components</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Layer</th>
+                        <th>Technology</th>
+                        <th>Purpose</th>
+                        <th>Performance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Consensus</td>
+                        <td>DPoS-BFT</td>
+                        <td>Block validation & finality</td>
+                        <td>&lt;1s finality</td>
+                    </tr>
+                    <tr>
+                        <td>Execution</td>
+                        <td>Parallel EVM</td>
+                        <td>Smart contract execution</td>
+                        <td>400K+ TPS</td>
+                    </tr>
+                    <tr>
+                        <td>Networking</td>
+                        <td>libp2p</td>
+                        <td>P2P communication</td>
+                        <td>1M+ peers</td>
+                    </tr>
+                    <tr>
+                        <td>Storage</td>
+                        <td>MPT + RocksDB</td>
+                        <td>State management</td>
+                        <td>10TB+ capacity</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2 id="consensus">Consensus Mechanism</h2>
+            <p>VNC-20 uses a hybrid Delegated Proof-of-Stake (DPoS) with Byzantine Fault Tolerance (BFT) consensus mechanism.</p>
+
+            <h3>Key Features</h3>
+            <ul>
+                <li><strong>Deterministic Finality:</strong> Transactions are final within 0.5-1 second</li>
+                <li><strong>87 Active Validators:</strong> Selected through token-weighted voting</li>
+                <li><strong>BFT Safety:</strong> Can tolerate up to 28 Byzantine validators (⅓ threshold)</li>
+                <li><strong>Energy Efficient:</strong> No mining required, minimal energy consumption</li>
+            </ul>
+
+            <h3>Validator Selection</h3>
+            <p>Validators are selected based on:</p>
+            <ol>
+                <li>Total VNC tokens staked</li>
+                <li>Voting power from delegators</li>
+                <li>Historical uptime and performance</li>
+                <li>Minimum stake requirement: 100,000 VNC</li>
+            </ol>
+
+            <div class="info-box">
+                <strong>ℹ️ Note:</strong> Validator elections occur every epoch (approximately 24 hours). The top 87 validators by voting power are selected for the next epoch.
+            </div>
+
+            <h2 id="security">Quantum Security</h2>
+            <p>VNC-20 is designed with post-quantum cryptography in mind, preparing for the quantum computing era.</p>
+
+            <h3>Current Implementation</h3>
+            <ul>
+                <li>ECDSA signatures (secp256k1) for backward compatibility</li>
+                <li>SHA-256 and Keccak-256 hash functions</li>
+                <li>Multi-signature support for enhanced security</li>
+            </ul>
+
+            <h3>Quantum-Ready Roadmap</h3>
+            <div class="feature-grid">
+                <div class="feature-box">
+                    <h4>Phase 1: Testing (Q2 2025)</h4>
+                    <p>Implement CRYSTALS-Dilithium on testnet</p>
+                </div>
+                <div class="feature-box">
+                    <h4>Phase 2: Optional (Q4 2025)</h4>
+                    <p>Optional quantum-resistant addresses</p>
+                </div>
+                <div class="feature-box">
+                    <h4>Phase 3: Hybrid (Q2 2026)</h4>
+                    <p>Dual-signature scheme (ECDSA + PQC)</p>
+                </div>
+                <div class="feature-box">
+                    <h4>Phase 4: Full Migration (2027)</h4>
+                    <p>Complete transition to post-quantum crypto</p>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <strong>⚠️ Important:</strong> While quantum computers capable of breaking current cryptography are not yet practical, VNC-20 is proactively preparing for this future threat.
+            </div>
+
+            <h2 id="performance">Performance & Scalability</h2>
+            <p>VNC-20 achieves unprecedented performance through multiple optimization techniques.</p>
+
+            <h3>Performance Metrics</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Current</th>
+                        <th>Target (2026)</th>
+                        <th>Theoretical Max</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Transactions/Second</td>
+                        <td>72,453</td>
+                        <td>200,000</td>
+                        <td>400,000+</td>
+                    </tr>
+                    <tr>
+                        <td>Block Time</td>
+                        <td>2.3s</td>
+                        <td>2.0s</td>
+                        <td>1.0s</td>
+                    </tr>
+                    <tr>
+                        <td>Finality</td>
+                        <td>0.8s</td>
+                        <td>0.5s</td>
+                        <td>0.3s</td>
+                    </tr>
+                    <tr>
+                        <td>Gas Price</td>
+                        <td>$0.00012</td>
+                        <td>$0.00008</td>
+                        <td>$0.00005</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Scalability Features</h3>
+            <ul>
+                <li><strong>Parallel Execution:</strong> Multiple transactions processed simultaneously</li>
+                <li><strong>Horizontal Sharding:</strong> Coming in 2026, enables linear scaling</li>
+                <li><strong>State Pruning:</strong> Efficient storage management</li>
+                <li><strong>Optimistic Rollups:</strong> Layer 2 scaling solution support</li>
+            </ul>
+
+            <h2 id="tokenomics">Tokenomics</h2>
+            <p>VNC Coin is the native cryptocurrency of the VNC-20 blockchain.</p>
+
+            <h3>Token Distribution</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Allocation</th>
+                        <th>Percentage</th>
+                        <th>Amount</th>
+                        <th>Vesting</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Public Sale</td>
+                        <td>20%</td>
+                        <td>2,000,000,000 VNC</td>
+                        <td>Immediate</td>
+                    </tr>
+                    <tr>
+                        <td>Ecosystem Fund</td>
+                        <td>25%</td>
+                        <td>2,500,000,000 VNC</td>
+                        <td>5 years</td>
+                    </tr>
+                    <tr>
+                        <td>Validator Rewards</td>
+                        <td>20%</td>
+                        <td>2,000,000,000 VNC</td>
+                        <td>10 years</td>
+                    </tr>
+                    <tr>
+                        <td>Team & Advisors</td>
+                        <td>15%</td>
+                        <td>1,500,000,000 VNC</td>
+                        <td>4 years</td>
+                    </tr>
+                    <tr>
+                        <td>Treasury</td>
+                        <td>20%</td>
+                        <td>2,000,000,000 VNC</td>
+                        <td>DAO controlled</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Token Utility</h3>
+            <ul>
+                <li><strong>Gas Fees:</strong> Pay for transaction and smart contract execution</li>
+                <li><strong>Staking:</strong> Secure the network and earn rewards (15-20% APY)</li>
+                <li><strong>Governance:</strong> Vote on protocol upgrades and parameter changes</li>
+                <li><strong>Validator Collateral:</strong> Required to run a validator node</li>
+            </ul>
+
+            <h2 id="smart-contracts">Smart Contracts</h2>
+            <p>VNC-20 is 100% EVM compatible. Deploy your existing Ethereum contracts without modification.</p>
+
+            <h3>Example: VNC-20 Token</h3>
+            <pre><code>// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract VNC20Token {
+    string public name = "My Token";
+    string public symbol = "MTK";
+    uint8 public decimals = 18;
+    uint256 public totalSupply;
+    
+    mapping(address => uint256) public balanceOf;
+    mapping(address => mapping(address => uint256)) public allowance;
+    
+    event Transfer(address indexed from, address indexed to, uint256 value);
+    event Approval(address indexed owner, address indexed spender, uint256 value);
+    
+    constructor(uint256 initialSupply) {
+        totalSupply = initialSupply * 10 ** decimals;
+        balanceOf[msg.sender] = totalSupply;
+    }
+    
+    function transfer(address to, uint256 value) public returns (bool) {
+        require(balanceOf[msg.sender] >= value, "Insufficient balance");
+        balanceOf[msg.sender] -= value;
+        balanceOf[to] += value;
+        emit Transfer(msg.sender, to, value);
+        return true;
+    }
+    
+    function approve(address spender, uint256 value) public returns (bool) {
+        allowance[msg.sender][spender] = value;
+        emit Approval(msg.sender, spender, value);
+        return true;
+    }
+}</code></pre>
+
+            <h3>Deployment Tools</h3>
+            <ul>
+                <li><strong>Remix IDE:</strong> Browser-based development environment</li>
+                <li><strong>Hardhat:</strong> Professional development framework</li>
+                <li><strong>Truffle:</strong> Suite of tools for smart contract development</li>
+                <li><strong>Foundry:</strong> Fast, portable toolkit for Ethereum development</li>
+            </ul>
+
+            <h2 id="api">API Reference</h2>
+            <p>VNC-20 provides a comprehensive JSON-RPC API compatible with Ethereum.</p>
+
+            <h3>RPC Endpoints</h3>
+            <ul>
+                <li><strong>Mainnet:</strong> <code>https://rpc.vnc20.io</code></li>
+                <li><strong>Testnet:</strong> <code>https://testnet-rpc.vnc20.io</code></li>
+                <li><strong>WebSocket:</strong> <code>wss://ws.vnc20.io</code></li>
+            </ul>
+
+            <h3>Common Methods</h3>
+            <pre><code>// Get latest block number
+await provider.eth_blockNumber();
+
+// Get account balance
+await provider.eth_getBalance(address, "latest");
+
+// Send transaction
+await provider.eth_sendTransaction({
+  from: fromAddress,
+  to: toAddress,
+  value: "0x1000000000000000", // 0.001 VNC
+  gas: "0x5208"
+});
+
+// Get transaction receipt
+await provider.eth_getTransactionReceipt(txHash);</code></pre>
+
+            <h2 id="staking">Staking Guide</h2>
+            <p>Stake your VNC tokens to help secure the network and earn rewards.</p>
+
+            <h3>Staking Requirements</h3>
+            <ul>
+                <li><strong>Minimum Stake:</strong> 100 VNC (for delegators)</li>
+                <li><strong>Validator Stake:</strong> 100,000 VNC minimum</li>
+                <li><strong>Lock Period:</strong> 30 days (flexible withdrawal after lock)</li>
+                <li><strong>Current APY:</strong> 15-20% depending on validator performance</li>
+            </ul>
+
+            <h3>How to Stake</h3>
+            <ol>
+                <li>Visit the <a href="wallet.html" style="color: var(--primary);">VNC-20 Wallet</a></li>
+                <li>Connect your wallet (MetaMask, WalletConnect, etc.)</li>
+                <li>Select "Stake" and choose your preferred validator</li>
+                <li>Enter the amount and confirm the transaction</li>
+                <li>Start earning rewards immediately!</li>
+            </ol>
+
+            <div class="success-box">
+                <strong>💰 Rewards Distribution:</strong> Staking rewards are distributed every epoch (24 hours) and automatically compound.
+            </div>
+
+            <h2 id="validation">Running a Validator Node</h2>
+            <p>Become a validator and help secure the VNC-20 network.</p>
+
+            <h3>Hardware Requirements</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Minimum</th>
+                        <th>Recommended</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>CPU</td>
+                        <td>4 cores</td>
+                        <td>8+ cores</td>
+                    </tr>
+                    <tr>
+                        <td>RAM</td>
+                        <td>16 GB</td>
+                        <td>32 GB</td>
+                    </tr>
+                    <tr>
+                        <td>Storage</td>
+                        <td>500 GB SSD</td>
+                        <td>1 TB NVMe SSD</td>
+                    </tr>
+                    <tr>
+                        <td>Network</td>
+                        <td>100 Mbps</td>
+                        <td>1 Gbps</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Setup Instructions</h3>
+            <pre><code># Download the VNC-20 node software
+wget https://github.com/vnc20/node/releases/latest/vnc20-node.tar.gz
+
+# Extract and install
+tar -xzf vnc20-node.tar.gz
+cd vnc20-node && ./install.sh
+
+# Initialize the node
+vnc20-node init --network mainnet
+
+# Start the validator
+vnc20-node validator start --stake 100000</code></pre>
+
+            <div class="info-box">
+                <strong>📖 Full Guide:</strong> For detailed setup instructions, security best practices, and monitoring tools, see our complete <a href="#" style="color: var(--primary);">Validator Operations Guide</a>.
+            </div>
+
+            <hr style="border: none; border-top: 1px solid var(--border); margin: 3rem 0;">
+
+            <div style="text-align: center; padding: 2rem 0;">
+                <h2>Ready to Build on VNC-20?</h2>
+                <p style="font-size: 1.1rem; margin-bottom: 2rem;">Join thousands of developers building the future of blockchain.</p>
+                <a href="wallet.html" class="btn btn-primary">Open Wallet</a>
+                <a href="explorer.html" class="btn btn-secondary">Explore Network</a>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    
+                    // Update active sidebar link
+                    document.querySelectorAll('.sidebar-links a').forEach(link => {
+                        link.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                }
+            });
+        });
+
+        // Highlight current section in sidebar on scroll
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('h2[id], h3[id]');
+            let current = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 100) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            document.querySelectorAll('.sidebar-links a').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2FA Enabled</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f4f4; padding: 20px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+          <!-- Header -->
+          <tr>
+            <td style="background: linear-gradient(135deg, #7c3aed 0%, #06b6d4 100%); padding: 40px; text-align: center;">
+              <div style="width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: 50%; margin: 0 auto 20px;">
+                <span style="font-size: 48px; line-height: 80px;">🔐</span>
+              </div>
+              <h1 style="color: #ffffff; margin: 0; font-size: 28px;">2FA Enabled</h1>
+            </td>
+          </tr>
+          
+          <!-- Content -->
+          <tr>
+            <td style="padding: 40px 30px;">
+              <h2 style="color: #333; margin: 0 0 20px 0;">Hi {{name}},</h2>
+              <p style="color: #666; line-height: 1.6; margin: 0 0 15px 0;">
+                Two-Factor Authentication (2FA) has been successfully enabled on your VNC Blockchain account.
+              </p>
+              <p style="color: #666; line-height: 1.6; margin: 0 0 25px 0;">
+                Your account is now more secure. You'll need to enter a 6-digit code from your authenticator app every time you log in.
+              </p>
+              
+              <!-- Security Tips -->
+              <div style="background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; margin-bottom: 25px; border-radius: 4px;">
+                <p style="color: #92400e; margin: 0 0 10px 0; font-weight: bold;">Security Tips:</p>
+                <ul style="color: #92400e; margin: 0; padding-left: 20px; line-height: 1.6;">
+                  <li>Keep your authenticator app secure</li>
+                  <li>Save your backup codes in a safe place</li>
+                  <li>Don't share your 2FA codes with anyone</li>
+                  <li>Update your app regularly</li>
+                </ul>
+              </div>
+              
+              <p style="color: #666; line-height: 1.6; margin: 0 0 10px 0;">
+                <strong>Didn't enable 2FA?</strong>
+              </p>
+              <p style="color: #666; line-height: 1.6; margin: 0 0 25px 0;">
+                If you didn't enable 2FA, please contact our support team immediately at <a href="mailto:support@vncblockchain.com" style="color: #7c3aed;">support@vncblockchain.com</a>
+              </p>
+              
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center">
+                    <a href="{{frontendUrl}}/dashboard" style="display: inline-block; padding: 15px 40px; background: linear-gradient(135deg, #7c3aed 0%, #06b6d4 100%); color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 16px;">Go to Dashboard</a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          
+          <!-- Footer -->
+          <tr>
+            <td style="background-color: #f9f9f9; padding: 30px; text-align: center;">
+              <p style="color: #999; font-size: 12px; margin: 0 0 10px 0;">
+                &copy; 2026 VNC Blockchain. All rights reserved.
+              </p>
+              <p style="color: #999; font-size: 12px; margin: 0;">
+                This is a security notification. Please do not reply to this email.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
