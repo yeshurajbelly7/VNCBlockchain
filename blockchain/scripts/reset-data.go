@@ -46,7 +46,7 @@ func main() {
 	}
 
 	if cleanedCount > 0 {
-		fmt.Printf("\n✨ Blockchain data cleanup completed! Removed %d director(ies)\n", cleanedCount)
+		fmt.Printf("\n✨ Blockchain data cleanup completed! Removed %d directories\n", cleanedCount)
 		fmt.Println("📊 All blockchain data has been reset to 0")
 		fmt.Println("🚀 Ready for fresh deployment")
 	} else {

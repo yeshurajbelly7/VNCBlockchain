@@ -60,13 +60,15 @@ cd backend/api-server
 # Drop and recreate database using Prisma
 if command -v npx &> /dev/null; then
     echo "   Resetting database schema..."
-    npx prisma migrate reset --force --skip-seed 2>/dev/null || true
+    if ! npx prisma migrate reset --force --skip-seed; then
+        echo "⚠️  Migrate reset failed, continuing with alternative method..."
+    fi
     
     echo "   Running fresh migrations..."
-    npx prisma migrate deploy 2>/dev/null || npx prisma db push --skip-generate 2>/dev/null || true
+    npx prisma migrate deploy 2>&1 || npx prisma db push --skip-generate 2>&1 || echo "⚠️  Migration step failed"
     
     echo "   Seeding database with initial data (all values at 0)..."
-    npx prisma db seed 2>/dev/null || npm run seed 2>/dev/null || npx ts-node prisma/seed.ts 2>/dev/null || true
+    npx prisma db seed 2>&1 || npm run seed 2>&1 || npx ts-node prisma/seed.ts 2>&1 || echo "⚠️  Seeding step failed"
     
     echo "✅ Database reset complete"
 else

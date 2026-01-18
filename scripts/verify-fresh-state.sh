@@ -48,17 +48,15 @@ echo ""
 
 cd blockchain 2>/dev/null || true
 
-if [ ! -d "blockchain-data" ]; then
-    echo "✅ blockchain-data: Does not exist (fresh state)"
-else
-    echo "⚠️  blockchain-data: Exists (may have old data)"
-fi
-
-if [ ! -d "chain-data" ]; then
-    echo "✅ chain-data: Does not exist (fresh state)"
-else
-    echo "⚠️  chain-data: Exists (may have old data)"
-fi
+# Check for blockchain data directories
+DATA_DIRS=("blockchain-data" "chain-data")
+for dir in "${DATA_DIRS[@]}"; do
+    if [ ! -d "$dir" ]; then
+        echo "✅ $dir: Does not exist (fresh state)"
+    else
+        echo "⚠️  $dir: Exists (may have old data)"
+    fi
+done
 
 cd - > /dev/null 2>&1 || true
 
