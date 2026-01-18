@@ -28,7 +28,8 @@
     "db:migrate": "npm run migrate --workspace=backend/api-gateway",
     "db:seed": "npm run seed --workspace=backend/api-gateway",
     "reset:all": "bash ./scripts/reset-all-data.sh",
-    "reset:all:windows": "powershell -ExecutionPolicy Bypass -File ./scripts/reset-all-data.ps1"
+    "reset:all:windows": "powershell -ExecutionPolicy Bypass -File ./scripts/reset-all-data.ps1",
+    "verify:fresh": "bash ./scripts/verify-fresh-state.sh"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",

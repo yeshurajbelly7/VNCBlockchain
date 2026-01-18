@@ -9,6 +9,9 @@ cd VNCBlockchain
 
 # 2. Initialize server (resets everything and starts fresh)
 bash ./scripts/init-server.sh
+
+# 3. Verify everything is at 0
+npm run verify:fresh
 ```
 
 That's it! Everything will start from 0.
