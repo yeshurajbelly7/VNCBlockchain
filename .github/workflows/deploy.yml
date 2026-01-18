@@ -22,11 +22,11 @@ jobs:
         with:
           node-version: 18
 
-      - name: Build frontend
-        run: |
-          cd frontend
-          npm install
-          npm run build
+- name: Build frontend
+  run: |
+    npm install --prefix frontend
+    npm run build --prefix frontend
+
 
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
