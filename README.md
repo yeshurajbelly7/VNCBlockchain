@@ -106,12 +106,47 @@ npm run migrate
 npm run dev
 ```
 
+### Fresh Server Deployment (Production)
+
+When deploying to a new server where all data should start from 0:
+
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/vnc-blockchain.git
+cd vnc-blockchain
+
+# Run the initialization script (resets everything to 0 and starts fresh)
+bash ./scripts/init-server.sh
+
+# Or manually:
+# 1. Install dependencies
+npm install
+
+# 2. Configure environment
+cp .env.example .env
+# Edit .env with your production values
+
+# 3. Reset all data to start fresh
+npm run reset:all
+
+# 4. Start services
+docker-compose up -d
+```
+
+**📌 Note**: The reset ensures all data starts from 0:
+- Presale: tokens_sold = 0, total_raised = 0, participants = 0
+- All user balances = 0
+- Blockchain starts from genesis block
+- See [RESET_QUICK_REFERENCE.md](./RESET_QUICK_REFERENCE.md) for more details
+
 ## 📚 Documentation
 
 - [Whitepaper](./docs/whitepaper.md) - Complete technical documentation
 - [Litepaper](./docs/litepaper.md) - Public overview
 - [API Documentation](./docs/api-docs/) - API reference
 - [Developer Guide](./docs/developer-guide.md) - Build on VNC-20
+- [Data Reset Guide](./DATA_RESET_GUIDE.md) - How to reset all data to 0
+- [Reset Quick Reference](./RESET_QUICK_REFERENCE.md) - Quick reset commands
 
 ## 🔒 Security
 

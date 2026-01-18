@@ -1,0 +1,133 @@
+# Docker Compose - Production Configuration
+# This configuration does NOT persist data volumes
+# Use this for fresh deployments where you want to start from 0
+
+version: '3.8'
+
+services:
+  # PostgreSQL Database (NO PERSISTENT VOLUME)
+  postgres:
+    image: postgres:15-alpine
+    container_name: vnc-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: vnc_blockchain
+      POSTGRES_USER: vnc_admin
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-vnc_secure_password}
+    ports:
+      - "5432:5432"
+    networks:
+      - vnc-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vnc_admin"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache (NO PERSISTENT VOLUME)
+  redis:
+    image: redis:7-alpine
+    container_name: vnc-redis
+    restart: unless-stopped
+    command: redis-server --requirepass ${REDIS_PASSWORD:-vnc_redis_password}
+    ports:
+      - "6379:6379"
+    networks:
+      - vnc-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # MongoDB for Analytics (NO PERSISTENT VOLUME)
+  mongodb:
+    image: mongo:7
+    container_name: vnc-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: vnc_admin
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-vnc_mongo_password}
+      MONGO_INITDB_DATABASE: vnc_analytics
+    ports:
+      - "27017:27017"
+    networks:
+      - vnc-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # API Gateway
+  api-gateway:
+    build:
+      context: ./backend/api-gateway
+      dockerfile: Dockerfile
+    container_name: vnc-api-gateway
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      DB_HOST: postgres
+      REDIS_HOST: redis
+      MONGO_URI: mongodb://vnc_admin:${MONGO_PASSWORD:-vnc_mongo_password}@mongodb:27017/vnc_analytics
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+    networks:
+      - vnc-network
+
+  # Blockchain RPC Server
+  rpc-server:
+    build:
+      context: ./backend/rpc-server
+      dockerfile: Dockerfile
+    container_name: vnc-rpc-server
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      REDIS_HOST: redis
+    ports:
+      - "8545:8545"
+      - "8546:8546"
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - vnc-network
+
+  # Blockchain Indexer
+  indexer:
+    build:
+      context: ./backend/indexer
+      dockerfile: Dockerfile
+    container_name: vnc-indexer
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      DB_HOST: postgres
+      REDIS_HOST: redis
+      MONGO_URI: mongodb://vnc_admin:${MONGO_PASSWORD:-vnc_mongo_password}@mongodb:27017/vnc_analytics
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+    networks:
+      - vnc-network
+
+networks:
+  vnc-network:
+    driver: bridge
+
+# NOTE: No volumes defined - all data is ephemeral
+# Data will be reset on container restart
+# For persistent data, use docker-compose.yml instead
