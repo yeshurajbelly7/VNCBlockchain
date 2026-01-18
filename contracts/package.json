@@ -3,15 +3,16 @@
   "version": "1.0.0",
   "description": "VNC Blockchain Smart Contracts",
   "main": "index.js",
-  "scripts": {
-    "compile": "hardhat compile",
-    "test": "hardhat test",
-    "deploy:local": "hardhat run scripts/deploy.js --network localhost",
-    "deploy:testnet": "hardhat run scripts/deploy.js --network polygon_mumbai",
-    "deploy:mainnet": "hardhat run scripts/deploy.js --network polygon",
-    "verify": "hardhat verify",
-    "node": "hardhat node"
-  },
+"scripts": {
+  "build": "echo \"Skipping contracts build\"",
+  "compile": "hardhat compile",
+  "test": "hardhat test",
+  "deploy:local": "hardhat run scripts/deploy.js --network localhost",
+  "deploy:testnet": "hardhat run scripts/deploy.js --network polygon_mumbai",
+  "deploy:mainnet": "hardhat run scripts/deploy.js --network polygon",
+  "verify": "hardhat verify",
+  "node": "hardhat node"
+}
   "keywords": [
     "blockchain",
     "smart-contracts",
