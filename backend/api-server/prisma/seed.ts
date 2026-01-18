@@ -5,7 +5,7 @@
  */
 
 import { PrismaClient, Role, KYCStatus } from '@prisma/client';
-import * as bcrypt from 'bcryptjs';
+import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
