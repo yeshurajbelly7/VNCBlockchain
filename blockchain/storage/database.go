@@ -37,6 +37,15 @@ func NewBlockchainDB(dataDir string) (*BlockchainDB, error) {
 	}
 
 	fmt.Printf("💾 Database opened at: %s\n", dataDir)
+	
+	// Check if this is a fresh start
+	latestBlock, err := blockchain.GetLatestBlockNumber()
+	if err == nil && latestBlock == 0 {
+		fmt.Println("🆕 Starting with fresh blockchain data (block 0)")
+	} else if err == nil {
+		fmt.Printf("📊 Resuming from block %d\n", latestBlock)
+	}
+	
 	return blockchain, nil
 }
 
