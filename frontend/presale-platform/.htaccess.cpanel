@@ -1,0 +1,84 @@
+# ============================================
+# VNC Blockchain Presale Platform - .htaccess
+# For cPanel Shared Hosting (Next.js)
+# ============================================
+
+# Enable Passenger (Node.js support)
+PassengerEnabled on
+PassengerAppRoot /home/USERNAME_PLACEHOLDER/presale
+PassengerAppType node
+PassengerStartupFile node_modules/next/dist/bin/next
+PassengerAppStart start
+PassengerAppEnv production
+
+# Use Node.js from virtual environment
+PassengerNodejs /home/USERNAME_PLACEHOLDER/nodevenv/presale/18/bin/node
+
+# Error handling
+PassengerFriendlyErrorPages off
+
+# Performance settings
+PassengerMinInstances 1
+PassengerMaxPoolSize 2
+
+# Next.js routing
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Don't rewrite files or directories
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+    
+    # Rewrite everything else to index.html
+    RewriteRule ^ index.html [L]
+</IfModule>
+
+# Protect sensitive files
+<FilesMatch "^\.env.*">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Security Headers
+<IfModule mod_headers.c>
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Browser Caching
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType text/javascript "access plus 1 month"
+    ExpiresByType font/ttf "access plus 1 year"
+    ExpiresByType font/woff "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+</IfModule>
+
+# Gzip Compression
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE text/javascript
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/json
+    AddOutputFilterByType DEFLATE image/svg+xml
+</IfModule>
+
+# ============================================
+# INSTALLATION INSTRUCTIONS:
+# ============================================
+# 1. Replace USERNAME_PLACEHOLDER with your cPanel username
+# 2. Upload this file to /home/username/presale/.htaccess
+# 3. Verify permissions: chmod 644 .htaccess
+# ============================================

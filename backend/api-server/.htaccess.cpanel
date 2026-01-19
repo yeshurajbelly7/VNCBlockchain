@@ -1,0 +1,79 @@
+# ============================================
+# VNC Blockchain Backend API - .htaccess
+# For cPanel Shared Hosting
+# ============================================
+
+# Disable directory listing
+Options -Indexes
+
+# Protect sensitive files
+<FilesMatch "^\.env.*">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+<FilesMatch "^package\.json$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+<FilesMatch "^prisma/">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Enable Passenger (Node.js support)
+PassengerEnabled on
+PassengerAppRoot /home/USERNAME_PLACEHOLDER/api
+PassengerAppType node
+PassengerStartupFile dist/server.js
+PassengerAppEnv production
+
+# Use Node.js from virtual environment
+PassengerNodejs /home/USERNAME_PLACEHOLDER/nodevenv/api/18/bin/node
+
+# Error handling
+PassengerFriendlyErrorPages off
+
+# Performance settings
+PassengerMinInstances 1
+PassengerMaxPoolSize 2
+PassengerPoolIdleTime 300
+
+# CORS Headers (if needed)
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Origin "*"
+    Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+    Header set Access-Control-Allow-Headers "Content-Type, Authorization"
+</IfModule>
+
+# Gzip Compression
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE application/json
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE text/html
+</IfModule>
+
+# Cache Control
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType application/json "access plus 0 seconds"
+    ExpiresByType text/html "access plus 0 seconds"
+</IfModule>
+
+# Security Headers
+<IfModule mod_headers.c>
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# ============================================
+# INSTALLATION INSTRUCTIONS:
+# ============================================
+# 1. Replace USERNAME_PLACEHOLDER with your cPanel username
+# 2. Upload this file to /home/username/api/.htaccess
+# 3. Verify permissions: chmod 644 .htaccess
+# ============================================
