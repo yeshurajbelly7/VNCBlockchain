@@ -8,7 +8,11 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "migrate": "prisma migrate dev",
-    "studio": "prisma studio"
+    "migrate:prod": "prisma migrate deploy",
+    "studio": "prisma studio",
+    "deploy:prod": "npm ci --production && npx prisma generate && npx prisma migrate deploy && npm run build",
+    "deploy:check": "npx prisma db pull && echo 'Database connected successfully'",
+    "db:verify-empty": "echo 'Checking if database is empty...' && npx prisma studio"
   },
   "dependencies": {
     "@prisma/client": "^5.7.1",
