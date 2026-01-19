@@ -1,4 +1,4 @@
-name: Deploy to Google Cloud Storage
+name: Deploy to cPanel Hosting
 
 on:
   push:
@@ -33,25 +33,24 @@ jobs:
         working-directory: frontend/public-website
         run: npm run build
 
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v2
+      - name: Deploy public website to cPanel via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: ${{ secrets.FTP_PORT }}
+          local-dir: ./frontend/public-website/out/
+          server-dir: ./public_html/
+          dangerous-clean-slate: false
 
-      - name: Upload presale platform to Cloud Storage
-        uses: google-github-actions/upload-cloud-storage@v2
+      - name: Deploy presale platform to cPanel via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          path: frontend/presale-platform/out
-          destination: vncblockchain.com/presale
-          parent: false
-          gzip: true
-          predefinedAcl: publicRead
-
-      - name: Upload public website to Cloud Storage
-        uses: google-github-actions/upload-cloud-storage@v2
-        with:
-          path: frontend/public-website/out
-          destination: vncblockchain.com
-          parent: false
-          gzip: true
-          predefinedAcl: publicRead
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: ${{ secrets.FTP_PORT }}
+          local-dir: ./frontend/presale-platform/out/
+          server-dir: ./public_html/presale/
+          dangerous-clean-slate: false
