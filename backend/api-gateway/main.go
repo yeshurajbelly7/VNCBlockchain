@@ -465,7 +465,7 @@ func (api *APIGateway) emergencyWithdraw(w http.ResponseWriter, r *http.Request)
 // Helper functions
 func (api *APIGateway) sendJSON(w http.ResponseWriter, status int, data interface{}) {
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteStatus(status)
+	w.WriteHeader(status)
 	json.NewEncoder(w).Encode(data)
 }
 
