@@ -74,7 +74,9 @@ VNC-Crypto-Blockchain/
 
 ## 🚀 Quick Start
 
-### Prerequisites
+### For Development
+
+#### Prerequisites
 
 - Node.js 18+
 - Go 1.21+
@@ -83,7 +85,7 @@ VNC-Crypto-Blockchain/
 - Redis 7+
 - Docker & Docker Compose
 
-### Installation
+#### Installation
 
 ```bash
 # Clone the repository
@@ -105,6 +107,38 @@ npm run migrate
 # Start all services
 npm run dev
 ```
+
+### For Production Deployment (Fresh Server)
+
+**Complete guide for deploying to a fresh production server:**
+
+```bash
+# 1. On your fresh Ubuntu server (as root)
+sudo bash scripts/setup-fresh-server.sh
+
+# 2. Clone repository (as application user)
+git clone https://github.com/yeshurajbelly7/VNCBlockchain.git
+cd VNCBlockchain
+
+# 3. Configure environment
+cp .env.production.example .env
+nano .env  # Fill in all required values
+
+# 4. Initialize database
+bash scripts/init-fresh-database.sh
+
+# 5. Deploy application
+bash scripts/deploy-production.sh
+
+# 6. Verify deployment
+bash scripts/verify-deployment.sh
+```
+
+**📖 For complete deployment instructions, see:**
+- [Fresh Deployment Guide](./FRESH_DEPLOYMENT_GUIDE.md) - Complete step-by-step guide
+- [Pre-Deployment Checklist](./PRE_DEPLOYMENT_CHECKLIST.md) - Comprehensive checklist
+- [Server Deployment Guide](./SERVER_DEPLOYMENT_GUIDE.md) - Advanced deployment options
+- [Scripts README](./scripts/README.md) - Deployment scripts documentation
 
 ## 📚 Documentation
 
